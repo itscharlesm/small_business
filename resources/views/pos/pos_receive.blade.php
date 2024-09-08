@@ -156,8 +156,8 @@
                             <label for="">Total:</label>
                         </div>
                         <div class="col-md-5">
-                            <input type="number" class="form-control form-control-sm" name="mtrx_total"
-                                id="mtrx_total" readonly>
+                            <input type="number" class="form-control form-control-sm" name="mtrx_total" id="mtrx_total"
+                                readonly>
                         </div>
 
                         <div class="col-md-3">
@@ -165,7 +165,7 @@
                                 id="mtrx_total_orders" readonly>
                         </div>
                         <div class="col-md-2">
-                            <label for="">pcs.</label>
+                            <label for="">orders</label>
                         </div>
 
                         <div class="col-md-12 mt-2">
@@ -302,9 +302,23 @@
 
     function removeItem(button) {
         const item = button.closest('li');
-        item.remove();
-        updateTotals();
-        toggleNoItemMessage(); // Call this function to update message visibility after removing an item
+        const quantityInput = item.querySelector('#trx_order_quantity');
+        const priceInput = item.querySelector('#trx_order_price');
+        const totalInput = item.querySelector('#trx_total_amount');
+
+        if (quantityInput && priceInput && totalInput) {
+            // Set values to 0 before removing the item
+            quantityInput.value = 0;
+            priceInput.value = 0;
+            totalInput.value = 0;
+
+            // Trigger the input event to update totals
+            quantityInput.dispatchEvent(new Event('input'));
+        }
+
+        item.remove(); // Remove the item from the DOM
+        updateTotals(); // Update the grand total
+        toggleNoItemMessage(); // Update the visibility of the no-item message
     }
 </script>
 
@@ -326,5 +340,4 @@
         });
     });
 </script>
-
 @endsection
