@@ -19,7 +19,7 @@
     }
 
     .hover-box {
-    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
     }
 
     .hover-box:hover {
@@ -50,7 +50,6 @@
 
 {{-- Main Content --}}
 <div class="content">
-
     <div class="row">
         <div class="col-md-8">
             <div class="container-fluid">
@@ -106,38 +105,29 @@
                             <table class="table table-striped table-hover" id="example2">
                                 <thead>
                                     <tr>
-                                        <th hidden style="text-align: center"></th>
                                         <th style="text-align: center">Menu Name</th>
                                         <th style="text-align: center">Category</th>
                                         <th style="text-align: center" width="120px">Price</th>
                                         <th style="text-align: center" width="20px">Quantity</th>
-                                        <th style="text-align: center" class="text-center">btn</th>
+                                        <th style="text-align: center" class="text-center">Add</th>
                                     </tr>
                                 </thead>
-                                <tbody class="">
+                                <tbody>
                                     @foreach ($menus as $menu)
                                         <tr>
-                                            <form method="post"
-                                                action="{{ action('App\Http\Controllers\POSController@pos_purchase_add') }}"
-                                                class="{{ $menu->menu_id }}">
-                                                @csrf
-                                                <td hidden style="text-align: vertical">
-                                                    <input type="hidden" name="item_prd_id" id="item_prd_id"
-                                                        value="{{ $menu->menu_id }}">
-                                                </td>
-                                                <td style="vertical-align: middle">{{ $menu->menu_name }}</td>
-                                                <td style="vertical-align: middle">{{ $menu->mcat_name }}</td>
-                                                <td style="vertical-align: middle" width="120px">{{ $menu->menu_price }}</td>
-                                                <td style="vertical-align: middle" width="20px">
-                                                    <input class="form-control" type="number" name="item_quantity"
-                                                        id="item_quantity" step="1" max="50" placeholder="0" required>
-                                                </td>
-                                                <td style="vertical-align: middle" class="text-center">
-                                                    <button type="submit" class="btn btn-sm btn-primary button-item-add">
-                                                        <i class="fa-solid fa-plus"></i>
-                                                    </button>
-                                                </td>
-                                            </form>
+                                            <td style="vertical-align: middle">{{ $menu->menu_name }}</td>
+                                            <td style="vertical-align: middle">{{ $menu->mcat_name }}</td>
+                                            <td style="vertical-align: middle" width="120px">{{ $menu->menu_price }}</td>
+                                            <td style="vertical-align: middle" width="20px">
+                                                <input class="form-control item-quantity" type="number" step="1" max="50"
+                                                    placeholder="0" data-price="{{ $menu->menu_price }}" required>
+                                            </td>
+                                            <td style="vertical-align: middle" class="text-center">
+                                                <button type="button" class="btn btn-sm btn-primary button-item-add"
+                                                    onclick="addItemToOrder('{{ $menu->menu_name }}', '{{ $menu->mcat_name }}', '{{ $menu->menu_price }}')">
+                                                    <i class="fa fa-plus"></i>
+                                                </button>
+                                            </td>
                                         </tr>
                                     @endforeach
                                 </tbody>
@@ -149,7 +139,6 @@
         </div>
         <div class="col-md-4">
             <div class="card my-0 py-0" style="min-height: 555px; max-height: 560px">
-                
                 <div class="card-body item-content pt-1">
                     <form method="POST" action="">
                         @csrf
@@ -157,64 +146,32 @@
                         <label for="">Orders:</label>
                         <hr>
                         <ul>
-                                    <li class="ml-0 pl-0 " style="list-style: none">
-                                        <div class="info-box">
-                                            <div class="info-box-content">
-                                                <span class="info-box-text">{{ $menu->menu_name }} - {{ $menu->mcat_name }}</span>
-                                                <div class="row">
-                                                    <div class="col-md-2">
-                                                        <label for="po_product_price">Price:</label>
-                                                    </div>
-                                                    <div class="col-md-5">
-                                                        <input type="number" class="form-control form-control-border form-control-sm" id="po_product_price" value="" readonly required>
-                                                    </div>
-                                                    <div class="col-md-3">
-                                                        <input type="number" class="form-control form-control-border form-control-sm" id="po_prd_quantity"
-                                                            value="" data-price="" required>
-                                                    </div>
-                                                    <div class="col-md-2">
-                                                        <label for="po_prd_quantity">orders</label>
-                                                    </div>
-                                                    <div class="col-md-2">
-                                                        <label for="po_total_amount">Total:</label>
-                                                    </div>
-                                                    <div class="col-md-5">
-                                                        <input type="number" class="form-control form-control-border form-control-sm" id="po_total_amount" value="" readonly required>
-                                                    </div>
-                                                    <div class="col-md-5">
-                                                        <input type="hidden" id="prd_id" value="" readonly>
-                                                        <button class="btn btn-sm btn-danger mb-0 pb-0 mt-1" style="width: 100%" type="button"><i class="fa fa-trash" aria-hidden="true"></i></button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </li>
-                                <p class="text-center">No item Selected</p>
+                            <p class="text-center">No item Selected</p>
                         </ul>
-                    </div>
-                    <div class="card-footer">
-                        <div class="row">
-                            <div class="col-md-2">
-                                <label for="">Total:</label>
-                            </div>
-                            <div class="col-md-5">
-                                <input type="number" class="form-control form-control-sm" name="grand_total" id="grand_total">
-                            </div>
-
-                            <div class="col-md-3">
-                                <input type="number" class="form-control form-control-sm" name="total_quantity" id="total_quantity">
-                            </div>
-                            <div class="col-md-2">
-                                <label for="">pcs.</label>
-                            </div>
-    
-                            <div class="col-md-12 mt-2">
-                                <button class="btn btn-sm btn-success" type="submit" style="width: 100%"
-                                    
-                                >Save</button>
-                            </div>
-                        </div>
                     </form>
+                </div>
+                <div class="card-footer">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <label for="">Total:</label>
+                        </div>
+                        <div class="col-md-5">
+                            <input type="number" class="form-control form-control-sm" name="grand_total"
+                                id="grand_total" readonly>
+                        </div>
+
+                        <div class="col-md-3">
+                            <input type="number" class="form-control form-control-sm" name="total_quantity"
+                                id="total_quantity" readonly>
+                        </div>
+                        <div class="col-md-2">
+                            <label for="">pcs.</label>
+                        </div>
+
+                        <div class="col-md-12 mt-2">
+                            <button class="btn btn-sm btn-success" type="submit" style="width: 100%">Save</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -222,12 +179,125 @@
 </div>
 
 <script>
-    document.getElementById('mcat_id').addEventListener('change', function() {
+    document.addEventListener('DOMContentLoaded', function () {
+        function updateOrderList(itemName, itemPrice, categoryName, quantity) {
+            const orderList = document.querySelector('.item-content ul');
+            const noItemMessage = document.querySelector('.item-content ul p');
+
+            if (!orderList) {
+                console.error('Order list element not found.');
+                return;
+            }
+
+            let item = Array.from(orderList.children).find(li => {
+                const textElement = li.querySelector('.info-box-text');
+                return textElement && textElement.textContent.includes(itemName);
+            });
+
+            if (item) {
+                const quantityInput = item.querySelector('#po_prd_quantity');
+                const priceInput = item.querySelector('#po_product_price');
+                const totalInput = item.querySelector('#po_total_amount');
+
+                if (quantityInput && priceInput && totalInput) {
+                    quantityInput.value = parseInt(quantityInput.value) + parseInt(quantity);
+                    totalInput.value = quantityInput.value * priceInput.value;
+                } else {
+                    console.error('Quantity, Price, or Total input not found.');
+                }
+            } else {
+                const newItem = document.createElement('li');
+                newItem.className = 'ml-0 pl-0';
+                newItem.style.listStyle = 'none';
+
+                newItem.innerHTML = `
+                <div class="info-box">
+                    <div class="info-box-content">
+                        <span class="info-box-text">${itemName} - ${categoryName}</span>
+                        <div class="row">
+                            <div class="col-md-2">
+                                <label for="po_product_price">Price:</label>
+                            </div>
+                            <div class="col-md-5">
+                                <input type="number" class="form-control form-control-border form-control-sm" id="po_product_price" value="${itemPrice}" readonly required>
+                            </div>
+                            <div class="col-md-3">
+                                <input type="number" class="form-control form-control-border form-control-sm" id="po_prd_quantity" value="${quantity}" data-price="${itemPrice}" required>
+                            </div>
+                            <div class="col-md-2">
+                                <label for="po_prd_quantity">qty.</label>
+                            </div>
+                            <div class="col-md-2">
+                                <label for="po_total_amount">Total:</label>
+                            </div>
+                            <div class="col-md-5">
+                                <input type="number" class="form-control form-control-border form-control-sm" id="po_total_amount" value="${quantity * itemPrice}" readonly required>
+                            </div>
+                            <div class="col-md-5">
+                                <input type="hidden" id="prd_id" value="" readonly>
+                                <button class="btn btn-sm btn-danger mb-0 pb-0 mt-1" style="width: 100%" type="button" onclick="removeItem(this)"><i class="fa fa-trash" aria-hidden="true"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+                orderList.appendChild(newItem);
+            }
+
+            updateTotals();
+            toggleNoItemMessage();
+        }
+
+        function updateTotals() {
+            const totalQuantity = Array.from(document.querySelectorAll('#po_prd_quantity')).reduce((sum, input) => sum + parseInt(input.value) || 0, 0);
+            const grandTotal = Array.from(document.querySelectorAll('#po_total_amount')).reduce((sum, input) => sum + parseInt(input.value) || 0, 0);
+
+            document.querySelector('#total_quantity').value = totalQuantity;
+            document.querySelector('#grand_total').value = grandTotal;
+        }
+
+        function toggleNoItemMessage() {
+            const orderList = document.querySelector('.item-content ul');
+            const noItemMessage = document.querySelector('.item-content ul p');
+
+            if (orderList.children.length > 0) {
+                noItemMessage.style.display = 'none';
+            } else {
+                noItemMessage.style.display = 'block';
+            }
+        }
+
+        function addItemToOrder(itemName, categoryName, itemPrice) {
+            const quantityInput = event.target.closest('tr').querySelector('.item-quantity');
+            const quantity = quantityInput.value;
+
+            if (quantity > 0) {
+                updateOrderList(itemName, itemPrice, categoryName, quantity);
+                quantityInput.value = ''; // Clear the quantity input
+            }
+        }
+
+        window.addItemToOrder = addItemToOrder; // Make the function globally accessible
+    });
+
+    function removeItem(button) {
+        const item = button.closest('li');
+        item.remove();
+        updateTotals();
+        toggleNoItemMessage(); // Call this function to update message visibility after removing an item
+    }
+</script>
+
+
+<script>
+    // Select Categories
+    document.getElementById('mcat_id').addEventListener('change', function () {
         let selectedCategory = this.value;
         let tableRows = document.querySelectorAll('tbody tr');
 
         tableRows.forEach(row => {
-            let categoryCell = row.cells[2]; // The category is in the third cell
+            let categoryCell = row.cells[1]; // The category is in the first cell
             let categoryValue = categoryCell.textContent.trim();
 
             if (selectedCategory === "" || categoryValue === selectedCategory) {
@@ -237,143 +307,6 @@
             }
         });
     });
-
-    document.addEventListener('DOMContentLoaded', function () {
-    updateGrandTotal();
-
-    document.querySelectorAll('[id="po_prd_quantity"]').forEach(function(quantityInput) {
-        quantityInput.addEventListener('input', function() {
-            const price = parseFloat(this.dataset.price);
-            const quantity = parseFloat(this.value);
-            
-            if (!isNaN(price) && !isNaN(quantity)) {
-                const totalAmount = price * quantity;
-                const totalAmountField = this.closest('.row').querySelector('[id="po_total_amount"]');
-                totalAmountField.value = totalAmount.toFixed(2);
-                updateGrandTotal();
-            }
-        });
-    });
-});
-
-function updateGrandTotal() {
-    let grandTotal = 0;
-    let totalQuantity = 0;
-
-    document.querySelectorAll('#po_total_amount').forEach(input => {
-        const value = parseFloat(input.value);
-        if (!isNaN(value)) {
-            grandTotal += value;
-        }
-    });
-
-    document.querySelectorAll('#po_prd_quantity').forEach(input => {
-        const quantity = parseInt(input.value);
-        if (!isNaN(quantity)) {
-            totalQuantity += quantity;
-        }
-    });
-
-    const grandTotalInput = document.getElementById('grand_total');
-    const totalQuantityInput = document.getElementById('total_quantity');
-
-    if (grandTotalInput && totalQuantityInput) {
-        grandTotalInput.value = grandTotal.toFixed(2);
-        totalQuantityInput.value = totalQuantity;
-
-        toggleSubmitButton(totalQuantity > 0);
-    }
-}
-
-function toggleSubmitButton(enable) {
-    const submitButton = document.querySelector('button[type="submit"]');
-    if (submitButton) {
-        submitButton.disabled = !enable;
-    }
-}
-
-    function updateGrandTotal() {
-        let grandTotal = 0;
-        let totalQuantity = 0;
-        
-        document.querySelectorAll('#po_total_amount').forEach(input => {
-            grandTotal += parseFloat(input.value);
-        });
-
-        document.querySelectorAll('#po_prd_quantity').forEach(input => {
-            totalQuantity += parseInt(input.value);
-        });
-
-        document.getElementById('grand_total').value = grandTotal.toFixed(2);
-        document.getElementById('total_quantity').value = totalQuantity;
-    }
-
-    // $('#cat_id').on('change', function() {
-    //     var selectedCategory = $(this).val();
-    //     $('tbody tr').each(function() {
-    //         var category = $(this).find('td:nth-child(3)').text().trim();
-    //         if (selectedCategory === "" || category === selectedCategory) {
-    //             $(this).show();
-    //         } else {
-    //             $(this).hide();
-    //         }
-    //     });
-    // });
-
-    // $(document).ready(function() {
-    //     // Attach event listener to the plus button
-    //     $('tbody').on('click', '.button-item-add', function(e) {
-    //         e.preventDefault();  // Prevent page reload
-            
-    //         // Extract product details from the current row
-    //         var $row = $(this).closest('tr');
-    //         var sku = $row.find('td').eq(1).text();
-    //         var name = $row.find('td').eq(2).text();
-    //         var price = $row.find('input').eq(0).val();
-    //         var quantity = $row.find('input').eq(1).val();
-
-    //         // Create a new item element
-    //         var newItem = `
-    //             <div class="d-flex justify-content-between align-items-center my-2">
-    //                 <div>
-    //                     <strong>${name}</strong> (SKU: ${sku})
-    //                     <br>
-    //                     Quantity: ${quantity}, Price: ${price}
-    //                 </div>
-    //                 <button class="btn btn-danger btn-sm remove-item"><i class="fa-solid fa-trash"></i></button>
-    //             </div>
-    //         `;
-
-    //         // Append the new item to the .item-content div
-    //         $('.item-content').append(newItem);
-
-    //         // Optionally, you can remove the "No item Selected" text if there's any item added
-    //         $('.item-content p').remove();
-    //     });
-
-    //     // Remove item when trash button is clicked
-    //     $('.item-content').on('click', '.remove-item', function(e) {
-    //         $(this).closest('div').remove();
-            
-    //         // If no items are left, display "No item Selected"
-    //         if ($('.item-content').children().length === 0) {
-    //             $('.item-content').html('<p class="text-center">No item Selected</p>');
-    //         }
-    //     });
-    // });
-
-    // $(document).ready(function() {
-    //     // Attach event listener to the plus button
-    //     $('tbody').on('click', '.button-item-add', function(e) {
-    //         e.preventDefault();  // Prevent default button action
-            
-    //         // Find the form within the same row as the clicked button
-    //         var $form = $(this).closest('tr').find('form');
-            
-    //         // Submit the form
-    //         $form.submit();
-    //     });
-    // });
 </script>
 
 @endsection
