@@ -25,10 +25,64 @@ class POSController extends Controller
         return view('pos.pos_receive', compact('categories', 'menus'));
     }
 
-    public function pos_confirm()
-    {
+    public function pos_confirm(Request $request)
+{
+    // Validate incoming request data
+    $validated = $request->validate([
+        'mtrx_total_orders' => 'required|integer',
+        'mtrx_total' => 'required|numeric',
+        'mtrx_cash' => 'required|numeric',
+        'mtrx_change' => 'required|numeric',
+        'mtrx_discount_whole' => 'nullable|numeric',
+        'mtrx_discount_percent' => 'nullable|numeric',
+        'order_items' => 'required|array', // Array of order items
+        'order_items.*.menu_id' => 'required|integer',
+        'order_items.*.mcat_id' => 'required|integer',
+        'order_items.*.quantity' => 'required|integer|min:1',
+    ]);
 
+    // Start a transaction
+    DB::beginTransaction();
+
+    try {
+        // Create a new menu transaction
+        $menuTransaction = DB::table('menu_transactions')->insertGetId([
+            'mtrx_total_orders' => $validated['mtrx_total_orders'],
+            'mtrx_total' => $validated['mtrx_total'],
+            'mtrx_cash' => $validated['mtrx_cash'],
+            'mtrx_change' => $validated['mtrx_change'],
+            'mtrx_discount_whole' => $validated['mtrx_discount_whole'] ?? null,
+            'mtrx_discount_percent' => $validated['mtrx_discount_percent'] ?? null,
+            'mtrx_date_created' => now(),
+            'mtrx_created_by' => session('usr_id'),
+            'mtrx_active' => 1,
+        ]);
+
+        // Insert each order item into menu_transaction_orders
+        foreach ($validated['order_items'] as $item) {
+            DB::table('menu_transaction_orders')->insert([
+                'mtrx_id' => $menuTransaction,
+                'menu_id' => $item['menu_id'],
+                'mcat_id' => $item['mcat_id'],
+                'mtrxo_order_quantity' => $item['quantity'],
+                'mtrxo_date_created' => now(),
+                'mtrxo_created_by' => session('usr_id'),
+                'mtrxo_active' => 1,
+            ]);
+        }
+
+        // Commit the transaction
+        DB::commit();
+
+        // Redirect or return response
+        return redirect()->route('some.route.name')->with('success', 'Transaction confirmed successfully.');
+    } catch (\Exception $e) {
+        // Rollback transaction on error
+        DB::rollback();
+        // Handle the exception (log it, return error message, etc.)
+        return redirect()->back()->withErrors(['error' => 'Failed to complete transaction. Please try again.']);
     }
+}
 
     // @ OHAHA PURCHASES
 

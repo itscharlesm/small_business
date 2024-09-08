@@ -138,92 +138,75 @@
             </div>
         </div>
         <div class="col-md-4">
-            <div class="card my-0 py-0" style="min-height: 555px; max-height: 560px">
-                <div class="card-body item-content pt-1">
-                    <form method="POST" action="">
-                        @csrf
+            <form action="{{ action('App\Http\Controllers\POSController@pos_confirm') }}" method="POST">
+                {{ csrf_field() }}
+                <div class="card my-0 py-0" style="min-height: 555px; max-height: 560px">
+
+                    <div class="card-body item-content pt-1">
                         <hr>
                         <label for="">Orders:</label>
                         <hr>
                         <ul>
                             <p class="text-center">No item Selected</p>
                         </ul>
-                    </form>
-                </div>
-                <div class="card-footer">
-                    <div class="row">
-                        <div class="col-md-3">
-                            <label for="">Discount:</label>
+                    </div>
+                    <div class="card-footer">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <label for="">Discount:</label>
+                            </div>
+                            <div class="col-md-4">
+                                <input type="number" style="text-align: center" class="form-control form-control-sm"
+                                    name="mtrx_discount_whole" id="mtrx_discount_whole" placeholder="whole">
+                            </div>
+                            <div class="col-md-4">
+                                <input type="number" style="text-align: center" class="form-control form-control-sm"
+                                    name="mtrx_discount_percent" id="mtrx_discount_percent" placeholder="%">
+                            </div>
                         </div>
-                        <div class="col-md-4">
-                            <input type="number" style="text-align: center" class="form-control form-control-sm"
-                                name="mtrx_discount_whole" id="mtrx_discount_whole" placeholder="whole">
+                    </div>
+                    <div class="card-footer">
+                        <div class="row">
+                            <div class="col-md-2">
+                                <label for="">Cash:</label>
+                            </div>
+                            <div class="col-md-4">
+                                <input type="number" class="form-control form-control-sm" name="mtrx_cash"
+                                    id="mtrx_cash">
+                            </div>
+                            <div class="col-md-2">
+                                <label for="">Change:</label>
+                            </div>
+                            <div class="col-md-4">
+                                <input type="number" class="form-control form-control-sm" name="mtrx_change"
+                                    id="mtrx_change" readonly>
+                            </div>
                         </div>
-                        <div class="col-md-4">
-                            <input type="number" style="text-align: center" class="form-control form-control-sm"
-                                name="mtrx_discount_percent" id="mtrx_discount_percent" placeholder="%">
+                    </div>
+                    <div class="card-footer">
+                        <div class="row">
+                            <div class="col-md-2">
+                                <label for="">Total:</label>
+                            </div>
+                            <div class="col-md-5">
+                                <input type="number" class="form-control form-control-sm" name="mtrx_total"
+                                    id="mtrx_total" readonly>
+                            </div>
+                            <div class="col-md-3">
+                                <input type="number" class="form-control form-control-sm" name="mtrx_total_orders"
+                                    id="mtrx_total_orders" readonly>
+                            </div>
+                            <div class="col-md-2">
+                                <label for="">orders</label>
+                            </div>
+                            <div class="col-md-12 mt-2">
+                                <button class="btn btn-sm btn-success" id="confirmButton"
+                                    style="width: 100%">Confirm</button>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="card-footer">
-                    <div class="row">
-                        <div class="col-md-2">
-                            <label for="">Cash:</label>
-                        </div>
-                        <div class="col-md-4">
-                            <input type="number" class="form-control form-control-sm" name="mtrx_cash" id="mtrx_cash">
-                        </div>
-                        <div class="col-md-2">
-                            <label for="">Change:</label>
-                        </div>
-                        <div class="col-md-4">
-                            <input type="number" class="form-control form-control-sm" name="mtrx_change"
-                                id="mtrx_change" readonly>
-                        </div>
-                    </div>
-                </div>
-                <div class="card-footer">
-                    <div class="row">
-                        <div class="col-md-2">
-                            <label for="">Total:</label>
-                        </div>
-                        <div class="col-md-5">
-                            <input type="number" class="form-control form-control-sm" name="mtrx_total" id="mtrx_total"
-                                readonly>
-                        </div>
-                        <div class="col-md-3">
-                            <input type="number" class="form-control form-control-sm" name="mtrx_total_orders"
-                                id="mtrx_total_orders" readonly>
-                        </div>
-                        <div class="col-md-2">
-                            <label for="">orders</label>
-                        </div>
-                        <div class="col-md-12 mt-2">
-                            <a class="btn btn-sm btn-success" id="confirmButton" style="width: 100%">Confirm</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Confirmation Modal -->
-<div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="confirmationModalLabel">Confirm Action</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                Are you sure you want to proceed with the action?
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-primary" id="confirmAction">Confirm</button>
-            </div>
+            </form>
         </div>
     </div>
 </div>
