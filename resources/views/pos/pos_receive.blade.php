@@ -156,13 +156,13 @@
                             <label for="">Total:</label>
                         </div>
                         <div class="col-md-5">
-                            <input type="number" class="form-control form-control-sm" name="grand_total"
-                                id="grand_total" readonly>
+                            <input type="number" class="form-control form-control-sm" name="mtrx_total"
+                                id="mtrx_total" readonly>
                         </div>
 
                         <div class="col-md-3">
-                            <input type="number" class="form-control form-control-sm" name="total_quantity"
-                                id="total_quantity" readonly>
+                            <input type="number" class="form-control form-control-sm" name="mtrx_total_orders"
+                                id="mtrx_total_orders" readonly>
                         </div>
                         <div class="col-md-2">
                             <label for="">pcs.</label>
@@ -179,8 +179,9 @@
 </div>
 
 <script>
+    // Order Script
     document.addEventListener('DOMContentLoaded', function () {
-        function updateOrderList(itemName, itemPrice, categoryName, quantity) {
+        function updateOrderList(menu_name, itemPrice, mcat_name, quantity) {
             const orderList = document.querySelector('.item-content ul');
             const noItemMessage = document.querySelector('.item-content ul p');
 
@@ -191,13 +192,13 @@
 
             let item = Array.from(orderList.children).find(li => {
                 const textElement = li.querySelector('.info-box-text');
-                return textElement && textElement.textContent.includes(itemName);
+                return textElement && textElement.textContent.includes(menu_name);
             });
 
             if (item) {
-                const quantityInput = item.querySelector('#po_prd_quantity');
-                const priceInput = item.querySelector('#po_product_price');
-                const totalInput = item.querySelector('#po_total_amount');
+                const quantityInput = item.querySelector('#trx_order_quantity');
+                const priceInput = item.querySelector('#trx_order_price');
+                const totalInput = item.querySelector('#trx_total_amount');
 
                 if (quantityInput && priceInput && totalInput) {
                     quantityInput.value = parseInt(quantityInput.value) + parseInt(quantity);
@@ -214,25 +215,25 @@
                 newItem.innerHTML = `
             <div class="info-box">
                 <div class="info-box-content">
-                    <span class="info-box-text">${itemName} - ${categoryName}</span>
+                    <span class="info-box-text">${menu_name} - ${mcat_name}</span>
                     <div class="row">
                         <div class="col-md-2">
-                            <label for="po_product_price">Price:</label>
+                            <label for="trx_order_price">Price:</label>
                         </div>
                         <div class="col-md-5">
-                            <input type="number" class="form-control form-control-border form-control-sm" id="po_product_price" value="${itemPrice}" readonly required>
+                            <input type="number" class="form-control form-control-border form-control-sm" id="trx_order_price" value="${itemPrice}" readonly required>
                         </div>
                         <div class="col-md-3">
-                            <input type="number" class="form-control form-control-border form-control-sm" id="po_prd_quantity" value="${quantity}" data-price="${itemPrice}" required>
+                            <input type="number" class="form-control form-control-border form-control-sm" id="trx_order_quantity" value="${quantity}" data-price="${itemPrice}" required>
                         </div>
                         <div class="col-md-2">
-                            <label for="po_prd_quantity">qty.</label>
+                            <label for="trx_order_quantity">orders</label>
                         </div>
                         <div class="col-md-2">
-                            <label for="po_total_amount">Total:</label>
+                            <label for="trx_total_amount">Total:</label>
                         </div>
                         <div class="col-md-5">
-                            <input type="number" class="form-control form-control-border form-control-sm" id="po_total_amount" value="${quantity * itemPrice}" readonly required>
+                            <input type="number" class="form-control form-control-border form-control-sm" id="trx_total_amount" value="${quantity * itemPrice}" readonly required>
                         </div>
                         <div class="col-md-5">
                             <input type="hidden" id="prd_id" value="" readonly>
@@ -246,7 +247,7 @@
                 orderList.appendChild(newItem);
 
                 // Add event listener to the new quantity input
-                newItem.querySelector('#po_prd_quantity').addEventListener('input', updateTotalForItem);
+                newItem.querySelector('#trx_order_quantity').addEventListener('input', updateTotalForItem);
             }
 
             updateTotals();
@@ -256,8 +257,8 @@
         function updateTotalForItem(event) {
             const quantityInput = event.target;
             const item = quantityInput.closest('li');
-            const priceInput = item.querySelector('#po_product_price');
-            const totalInput = item.querySelector('#po_total_amount');
+            const priceInput = item.querySelector('#trx_order_price');
+            const totalInput = item.querySelector('#trx_total_amount');
 
             if (priceInput && totalInput) {
                 totalInput.value = quantityInput.value * priceInput.value;
@@ -268,11 +269,11 @@
         }
 
         function updateTotals() {
-            const totalQuantity = Array.from(document.querySelectorAll('#po_prd_quantity')).reduce((sum, input) => sum + parseInt(input.value) || 0, 0);
-            const grandTotal = Array.from(document.querySelectorAll('#po_total_amount')).reduce((sum, input) => sum + parseInt(input.value) || 0, 0);
+            const totalQuantity = Array.from(document.querySelectorAll('#trx_order_quantity')).reduce((sum, input) => sum + parseInt(input.value) || 0, 0);
+            const grandTotal = Array.from(document.querySelectorAll('#trx_total_amount')).reduce((sum, input) => sum + parseInt(input.value) || 0, 0);
 
-            document.querySelector('#total_quantity').value = totalQuantity;
-            document.querySelector('#grand_total').value = grandTotal;
+            document.querySelector('#mtrx_total_orders').value = totalQuantity;
+            document.querySelector('#mtrx_total').value = grandTotal;
         }
 
         function toggleNoItemMessage() {
@@ -286,12 +287,12 @@
             }
         }
 
-        function addItemToOrder(itemName, categoryName, itemPrice) {
+        function addItemToOrder(menu_name, mcat_name, itemPrice) {
             const quantityInput = event.target.closest('tr').querySelector('.item-quantity');
             const quantity = quantityInput.value;
 
             if (quantity > 0) {
-                updateOrderList(itemName, itemPrice, categoryName, quantity);
+                updateOrderList(menu_name, itemPrice, mcat_name, quantity);
                 quantityInput.value = ''; // Clear the quantity input
             }
         }
