@@ -209,8 +209,8 @@
 </div>
 
 <script>
-    // Order Script
     document.addEventListener('DOMContentLoaded', function () {
+        // Function to update order list
         function updateOrderList(menu_name, itemPrice, mcat_name, quantity) {
             const orderList = document.querySelector('.item-content ul');
             const noItemMessage = document.querySelector('.item-content ul p');
@@ -243,36 +243,36 @@
                 newItem.style.listStyle = 'none';
 
                 newItem.innerHTML = `
-            <div class="info-box">
-                <div class="info-box-content">
-                    <span class="info-box-text">${menu_name} - ${mcat_name}</span>
-                    <div class="row">
-                        <div class="col-md-2">
-                            <label for="trx_order_price">Price:</label>
-                        </div>
-                        <div class="col-md-5">
-                            <input type="number" class="form-control form-control-border form-control-sm" id="trx_order_price" value="${itemPrice}" readonly required>
-                        </div>
-                        <div class="col-md-3">
-                            <input type="number" class="form-control form-control-border form-control-sm" id="trx_order_quantity" value="${quantity}" data-price="${itemPrice}" required>
-                        </div>
-                        <div class="col-md-2">
-                            <label for="trx_order_quantity">orders</label>
-                        </div>
-                        <div class="col-md-2">
-                            <label for="trx_total_amount">Total:</label>
-                        </div>
-                        <div class="col-md-5">
-                            <input type="number" class="form-control form-control-border form-control-sm" id="trx_total_amount" value="${quantity * itemPrice}" readonly required>
-                        </div>
-                        <div class="col-md-5">
-                            <input type="hidden" id="prd_id" value="" readonly>
-                            <button class="btn btn-sm btn-danger mb-0 pb-0 mt-1" style="width: 100%" type="button" onclick="removeItem(this)"><i class="fa fa-trash" aria-hidden="true"></i></button>
+                    <div class="info-box">
+                        <div class="info-box-content">
+                            <span class="info-box-text">${menu_name} - ${mcat_name}</span>
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <label for="trx_order_price">Price:</label>
+                                </div>
+                                <div class="col-md-5">
+                                    <input type="number" class="form-control form-control-border form-control-sm" id="trx_order_price" value="${itemPrice}" readonly required>
+                                </div>
+                                <div class="col-md-3">
+                                    <input type="number" class="form-control form-control-border form-control-sm" id="trx_order_quantity" value="${quantity}" data-price="${itemPrice}" required>
+                                </div>
+                                <div class="col-md-2">
+                                    <label for="trx_order_quantity">orders</label>
+                                </div>
+                                <div class="col-md-2">
+                                    <label for="trx_total_amount">Total:</label>
+                                </div>
+                                <div class="col-md-5">
+                                    <input type="number" class="form-control form-control-border form-control-sm" id="trx_total_amount" value="${quantity * itemPrice}" readonly required>
+                                </div>
+                                <div class="col-md-5">
+                                    <input type="hidden" id="prd_id" value="" readonly>
+                                    <button class="btn btn-sm btn-danger mb-0 pb-0 mt-1" style="width: 100%" type="button" onclick="removeItem(this)"><i class="fa fa-trash" aria-hidden="true"></i></button>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </div>
-        `;
+                `;
 
                 orderList.appendChild(newItem);
 
@@ -284,6 +284,7 @@
             toggleNoItemMessage();
         }
 
+        // Function to update total for an item
         function updateTotalForItem(event) {
             const quantityInput = event.target;
             const item = quantityInput.closest('li');
@@ -298,64 +299,15 @@
             }
         }
 
+        // Function to update totals
         function updateTotals() {
             const totalQuantity = Array.from(document.querySelectorAll('#trx_order_quantity')).reduce((sum, input) => sum + parseInt(input.value) || 0, 0);
             const grandTotal = Array.from(document.querySelectorAll('#trx_total_amount')).reduce((sum, input) => sum + parseInt(input.value) || 0, 0);
 
             document.querySelector('#mtrx_total_orders').value = totalQuantity;
             document.querySelector('#mtrx_total').value = grandTotal;
-        }
 
-        function toggleNoItemMessage() {
-            const orderList = document.querySelector('.item-content ul');
-            const noItemMessage = document.querySelector('.item-content ul p');
-
-            if (orderList.children.length > 0) {
-                noItemMessage.style.display = 'none';
-            } else {
-                noItemMessage.style.display = 'block';
-            }
-        }
-
-        function addItemToOrder(menu_name, mcat_name, itemPrice) {
-            const quantityInput = event.target.closest('tr').querySelector('.item-quantity');
-            const quantity = quantityInput.value;
-
-            if (quantity > 0) {
-                updateOrderList(menu_name, itemPrice, mcat_name, quantity);
-                quantityInput.value = ''; // Clear the quantity input
-            }
-        }
-
-        window.addItemToOrder = addItemToOrder; // Make the function globally accessible
-    });
-
-    function removeItem(button) {
-        const item = button.closest('li');
-        const quantityInput = item.querySelector('#trx_order_quantity');
-        const priceInput = item.querySelector('#trx_order_price');
-        const totalInput = item.querySelector('#trx_total_amount');
-
-        if (quantityInput && priceInput && totalInput) {
-            // Set values to 0 before removing the item
-            quantityInput.value = 0;
-            priceInput.value = 0;
-            totalInput.value = 0;
-
-            // Trigger the input event to update totals
-            quantityInput.dispatchEvent(new Event('input'));
-        }
-
-        item.remove(); // Remove the item from the DOM
-        updateTotals(); // Update the grand total
-        toggleNoItemMessage(); // Update the visibility of the no-item message
-    }
-</script>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        // Function to update totals and change based on inputs
-        function updateTotals() {
+            // Update totals and change based on inputs
             const totalInput = document.getElementById('mtrx_total');
             const cashInput = document.getElementById('mtrx_cash');
             const changeInput = document.getElementById('mtrx_change');
@@ -400,6 +352,51 @@
             }
         }
 
+        // Function to toggle no-item message
+        function toggleNoItemMessage() {
+            const orderList = document.querySelector('.item-content ul');
+            const noItemMessage = document.querySelector('.item-content ul p');
+
+            if (orderList.children.length > 0) {
+                noItemMessage.style.display = 'none';
+            } else {
+                noItemMessage.style.display = 'block';
+            }
+        }
+
+        // Function to add item to order
+        function addItemToOrder(menu_name, mcat_name, itemPrice) {
+            const quantityInput = event.target.closest('tr').querySelector('.item-quantity');
+            const quantity = quantityInput.value;
+
+            if (quantity > 0) {
+                updateOrderList(menu_name, itemPrice, mcat_name, quantity);
+                quantityInput.value = ''; // Clear the quantity input
+            }
+        }
+
+        // Function to remove an item
+        function removeItem(button) {
+            const item = button.closest('li');
+            const quantityInput = item.querySelector('#trx_order_quantity');
+            const priceInput = item.querySelector('#trx_order_price');
+            const totalInput = item.querySelector('#trx_total_amount');
+
+            if (quantityInput && priceInput && totalInput) {
+                // Set values to 0 before removing the item
+                quantityInput.value = 0;
+                priceInput.value = 0;
+                totalInput.value = 0;
+
+                // Trigger the input event to update totals
+                quantityInput.dispatchEvent(new Event('input'));
+            }
+
+            item.remove(); // Remove the item from the DOM
+            updateTotals(); // Update the grand total
+            toggleNoItemMessage(); // Update the visibility of the no-item message
+        }
+
         // Attach event listeners to inputs
         const inputs = [
             document.getElementById('mtrx_cash'),
@@ -413,6 +410,10 @@
 
         // Ensure total is updated when the page loads
         updateTotals();
+
+        // Make functions globally accessible
+        window.addItemToOrder = addItemToOrder;
+        window.removeItem = removeItem;
     });
 </script>
 
