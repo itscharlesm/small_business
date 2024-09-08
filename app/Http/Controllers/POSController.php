@@ -10,58 +10,21 @@ use DB;
 class POSController extends Controller
 {
     public function pos_receive_main()
-    {
-        $clients = DB::table('clients')
-            ->where('clt_active', '=', 1)
-            ->get();
+{
+    $categories = DB::table('menu_categories')
+        ->where('mcat_active', '=', 1)
+        ->get();
 
-        $categories = DB::table('product_categories')
-            ->where('cat_active', '=', 1)
-            ->get();
+    // Join the menus with menu_categories to get mcat_name
+    $menus = DB::table('menus')
+        ->join('menu_categories', 'menus.mcat_id', '=', 'menu_categories.mcat_id')
+        ->where('menus.menu_active', '=', 1)
+        ->select('menus.*', 'menu_categories.mcat_name') // Select the menu fields and the category name
+        ->get();
 
-        $products = DB::table('products')
-            ->join('suppliers', 'products.sup_id', '=', 'suppliers.sup_id')
-            ->join('product_categories', 'products.cat_id', '=', 'product_categories.cat_id')
-            ->leftJoin('product_sub_categories', 'products.psc_id', '=', 'product_sub_categories.psc_id')
-            ->leftJoin('product_category_values', function ($join) {
-                $join->on('products.prd_id', '=', 'product_category_values.prd_id')
-                    ->on('products.cat_id', '=', 'product_category_values.cat_id');
-            })
-            ->leftJoin('product_sub_category_values', function ($join) {
-                $join->on('products.prd_id', '=', 'product_sub_category_values.prd_id')
-                    ->on('products.psc_id', '=', 'product_sub_category_values.psc_id');
-            })
-            ->select(
-                'products.*',
-                'product_categories.cat_name as category_name',
-                'product_sub_categories.psc_name as sub_category_name',
-                'product_category_values.pcv_value as category_value',
-                'product_sub_category_values.pscv_value as sub_category_value'
-            )
-            ->orderBy('product_categories.cat_name')
-            ->orderBy('product_sub_categories.psc_name')
-            ->orderBy('products.prd_name')
-            ->get();
+    return view('pos.pos_receive', compact('categories', 'menus'));
+}
 
-        $temp_items = DB::table('temp_po_transactions')
-            ->join('products', 'products.prd_id', '=', 'temp_po_transactions.prd_id')
-            ->join('product_categories', 'product_categories.cat_id', '=', 'products.cat_id')
-            ->leftJoin('product_category_values', function ($join) {
-                $join->on('products.prd_id', '=', 'product_category_values.prd_id')
-                    ->on('products.cat_id', '=', 'product_category_values.cat_id');
-            })
-            ->where('tpo_active', '=', 1)
-            ->select(
-                'temp_po_transactions.*',
-                'products.prd_id',
-                'products.prd_name',
-                'product_categories.cat_name',
-                'product_category_values.pcv_value',
-            )
-            ->get();
-
-        return view('pos.pos_receive', compact('clients', 'categories', 'products', 'temp_items'));
-    }
 
     public function pos_receive_add()
     {

@@ -87,7 +87,6 @@
                         </div>
                     </div>
                 </header>
-
                 <section>
                     <div class="row mb-3">
                         <div class="col-md-12">
@@ -96,7 +95,7 @@
                                 <select class="form-control" name="cat_id" id="cat_id">
                                     <option value="">-- ALL --</option>
                                     @foreach ($categories as $category)
-                                    <option value="{{ $category->cat_name }}">{{ $category->cat_name }}</option>
+                                        <option value="{{ $category->mcat_name }}">{{ $category->mcat_name }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -108,54 +107,38 @@
                                 <thead>
                                     <tr>
                                         <th hidden></th>
-                                        <th>SKU #</th>
-                                        <th>Product Name</th>
+                                        <th>Menu Name</th>
                                         <th>Category</th>
-                                        <th>Attribute</th>
                                         <th width="120px">Price</th>
                                         <th width="20px">Quantity</th>
                                         <th class="text-center">btn</th>
                                     </tr>
                                 </thead>
                                 <tbody class="">
-                                    @foreach ($products as $product)
-                                    <tr>
-                                        <form method="post"
-                                            action="{{ action('App\Http\Controllers\POSController@pos_purchase_add') }}"
-                                            class="{{ $product->prd_id }}">
-                                            @csrf
-                                            <td hidden>
-                                                <input type="hidden" name="item_prd_id" id="item_prd_id"
-                                                    value="{{ $product->prd_id }}">
-                                            </td>
-                                            <td>{{ $product->prd_sku_number }}</td>
-                                            <td>{{ $product->prd_name }}</td>
-                                            <td>{{ $product->category_name }}</td>
-                                            <td>{{ $product->category_value ?? 'N/A' }}</td>
-                                            @php
-                                            $price_type = DB::table('price_type')
-                                            ->where('prd_id', '=', $product->prd_id)
-                                            ->first();
-                                            @endphp
-                                            <td width="120px">
-                                                <select class="form-control" name="item_price" id="item_price">
-                                                    <option value="{{ $price_type->price_typ_retail }}">Retail: {{
-                                                        number_format($price_type->price_typ_retail) }}</option>
-                                                    <option value="{{ $price_type->price_typ_dealer }}">Dealer: {{
-                                                        number_format($price_type->price_typ_dealer) }}</option>
-                                                </select>
-                                            </td>
-                                            <td width="20px">
-                                                <input class="form-control" type="number" name="item_quantity"
-                                                    id="item_quantity" step="1" max="50" placeholder="0" required>
-                                            </td>
-                                            <td class="text-center">
-                                                <button type="submit" class="btn btn-sm btn-primary button-item-add">
-                                                    <i class="fa-solid fa-plus"></i>
-                                                </button>
-                                            </td>
-                                        </form>
-                                    </tr>
+                                    @foreach ($menus as $menu)
+                                        <tr>
+                                            <form method="post"
+                                                action="{{ action('App\Http\Controllers\POSController@pos_purchase_add') }}"
+                                                class="{{ $menu->menu_id }}">
+                                                @csrf
+                                                <td hidden>
+                                                    <input type="hidden" name="item_prd_id" id="item_prd_id"
+                                                        value="{{ $menu->menu_id }}">
+                                                </td>
+                                                <td>{{ $menu->menu_name }}</td>
+                                                <td>{{ $menu->mcat_name }}</td>
+                                                <td width="120px">{{ $menu->menu_price }}</td>
+                                                <td width="20px">
+                                                    <input class="form-control" type="number" name="item_quantity"
+                                                        id="item_quantity" step="1" max="50" placeholder="0" required>
+                                                </td>
+                                                <td class="text-center">
+                                                    <button type="submit" class="btn btn-sm btn-primary button-item-add">
+                                                        <i class="fa-solid fa-plus"></i>
+                                                    </button>
+                                                </td>
+                                            </form>
+                                        </tr>
                                     @endforeach
                                 </tbody>
                             </table>
@@ -170,60 +153,43 @@
                 <div class="card-body item-content pt-1">
                     <form method="POST" action="{{ action('App\Http\Controllers\POSController@pos_purchase_add_transaction') }}">
                         @csrf
-                        <div class="header my-0 pt-0 pb-0 border-bottom">
-                            <div class="d-flex align-items-center pb-0 mb-1 mt-0">
-                                <label for="clt_id" class="form-label mx-auto mt-1" style="flex-basis: 50%">Select
-                                    Client:</label>
-                                <select class="form-control mx-auto" name="clt_id" id="clt_id" required>
-                                    <option value="">--Select Client--</option>
-                                    @foreach ($clients as $client)
-                                    <option value="{{ $client->clt_id }}">{{ $client->clt_name }}</option>
-                                    @endforeach
-                                </select>
-                                <button class="btn btn-primary ml-auto"><i class="fa-solid fa-circle-plus"></i></button>
-                            </div>
-                        </div>
-                        
-                        <label for="">Selected Items:</label>
+                        <hr>
+                        <label for="">Orders:</label>
+                        <hr>
                         <ul>
-                            @if ($temp_items->count() > 0)
-                                @foreach ($temp_items as $temp_item)
                                     <li class="ml-0 pl-0 " style="list-style: none">
                                         <div class="info-box">
                                             <div class="info-box-content">
-                                                <span class="info-box-text">{{ $temp_item->prd_name }} - {{ $temp_item->cat_name }} - {{ $temp_item->pcv_value }}</span>
+                                                <span class="info-box-text">{{ $menu->menu_name }} - {{ $menu->mcat_name }}</span>
                                                 <div class="row">
                                                     <div class="col-md-2">
                                                         <label for="po_product_price">Price:</label>
                                                     </div>
                                                     <div class="col-md-5">
-                                                        <input type="number" class="form-control form-control-border form-control-sm" name="products[{{ $temp_item->prd_id }}][po_product_price]" id="po_product_price" value="{{ $temp_item->tpo_prd_price }}" readonly required>
+                                                        <input type="number" class="form-control form-control-border form-control-sm" id="po_product_price" value="" readonly required>
                                                     </div>
                                                     <div class="col-md-3">
-                                                        <input type="number" class="form-control form-control-border form-control-sm" name="products[{{ $temp_item->prd_id }}][po_prd_quantity]" id="po_prd_quantity"
-                                                            value="{{ $temp_item->tpo_quantity }}" data-price="{{ $temp_item->tpo_prd_price }}" required>
+                                                        <input type="number" class="form-control form-control-border form-control-sm" id="po_prd_quantity"
+                                                            value="" data-price="" required>
                                                     </div>
                                                     <div class="col-md-2">
-                                                        <label for="po_prd_quantity">pcs.</label>
+                                                        <label for="po_prd_quantity">orders</label>
                                                     </div>
                                                     <div class="col-md-2">
                                                         <label for="po_total_amount">Total:</label>
                                                     </div>
                                                     <div class="col-md-5">
-                                                        <input type="number" class="form-control form-control-border form-control-sm" name="products[{{ $temp_item->prd_id }}][po_total_amount]" id="po_total_amount" value="{{ $temp_item->tpo_total_price }}" readonly required>
+                                                        <input type="number" class="form-control form-control-border form-control-sm" id="po_total_amount" value="" readonly required>
                                                     </div>
                                                     <div class="col-md-5">
-                                                        <input type="hidden" name="products[{{ $temp_item->prd_id }}][prd_id]" id="prd_id" value="{{ $temp_item->prd_id }}" readonly>
+                                                        <input type="hidden" id="prd_id" value="" readonly>
                                                         <button class="btn btn-sm btn-danger mb-0 pb-0 mt-1" style="width: 100%" type="button"><i class="fa fa-trash" aria-hidden="true"></i></button>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </li>
-                                @endforeach
-                            @else
                                 <p class="text-center">No item Selected</p>
-                            @endif
                         </ul>
                     </div>
                     <div class="card-footer">
@@ -241,12 +207,10 @@
                             <div class="col-md-2">
                                 <label for="">pcs.</label>
                             </div>
-                            
+    
                             <div class="col-md-12 mt-2">
                                 <button class="btn btn-sm btn-success" type="submit" style="width: 100%"
-                                    @if ($temp_items->count() == 0)
-                                        disabled
-                                    @endif
+                                    
                                 >Save</button>
                             </div>
                         </div>
@@ -275,22 +239,58 @@
     });
 
     document.addEventListener('DOMContentLoaded', function () {
+    updateGrandTotal();
 
-        updateGrandTotal();
-
-        document.querySelectorAll('[id="po_prd_quantity"]').forEach(function(quantityInput) {
-            quantityInput.addEventListener('input', function() {
-                const price = parseFloat(this.dataset.price);
-                const quantity = parseFloat(this.value);
+    document.querySelectorAll('[id="po_prd_quantity"]').forEach(function(quantityInput) {
+        quantityInput.addEventListener('input', function() {
+            const price = parseFloat(this.dataset.price);
+            const quantity = parseFloat(this.value);
+            
+            if (!isNaN(price) && !isNaN(quantity)) {
                 const totalAmount = price * quantity;
-
                 const totalAmountField = this.closest('.row').querySelector('[id="po_total_amount"]');
                 totalAmountField.value = totalAmount.toFixed(2);
-                
                 updateGrandTotal();
-            });
+            }
         });
     });
+});
+
+function updateGrandTotal() {
+    let grandTotal = 0;
+    let totalQuantity = 0;
+
+    document.querySelectorAll('#po_total_amount').forEach(input => {
+        const value = parseFloat(input.value);
+        if (!isNaN(value)) {
+            grandTotal += value;
+        }
+    });
+
+    document.querySelectorAll('#po_prd_quantity').forEach(input => {
+        const quantity = parseInt(input.value);
+        if (!isNaN(quantity)) {
+            totalQuantity += quantity;
+        }
+    });
+
+    const grandTotalInput = document.getElementById('grand_total');
+    const totalQuantityInput = document.getElementById('total_quantity');
+
+    if (grandTotalInput && totalQuantityInput) {
+        grandTotalInput.value = grandTotal.toFixed(2);
+        totalQuantityInput.value = totalQuantity;
+
+        toggleSubmitButton(totalQuantity > 0);
+    }
+}
+
+function toggleSubmitButton(enable) {
+    const submitButton = document.querySelector('button[type="submit"]');
+    if (submitButton) {
+        submitButton.disabled = !enable;
+    }
+}
 
     function updateGrandTotal() {
         let grandTotal = 0;

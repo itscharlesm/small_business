@@ -26,9 +26,9 @@
                                     <img src="{{ asset('images/accounts/logo/logo.png') }}" class="img-circle elevation-2" style="width:80px;height:80px;" alt="">
                                 </div>
                                 <div class="d-flex justify-content-center">
-                                    <h5 class="text-center" style="color:gray;">MCM EyeCafe</h5>
+                                    <h5 class="text-center" style="color:gray;">Small Business</h5>
                                 </div>
-                                <p><small>PLEASE LOGIN TO Your ACCOUNT</small></p>
+                                <p><small>PLEASE LOGIN YOUR ACCOUNT</small></p>
                                 @if(session('errorMessage'))
                                     <p style="color:red;"><small>{{ session('errorMessage') }}</small></p>
                                 @endif
