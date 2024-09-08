@@ -1,6 +1,6 @@
 @extends('admin.themes.layouts.main')
 
-@section('title', 'POS - Receive')
+@section('title', 'POS')
 
 @section('content')
 
@@ -152,6 +152,38 @@
                 </div>
                 <div class="card-footer">
                     <div class="row">
+                        <div class="col-md-3">
+                            <label for="">Discount:</label>
+                        </div>
+                        <div class="col-md-4">
+                            <input type="number" style="text-align: center" class="form-control form-control-sm"
+                                name="mtrx_discount_whole" id="mtrx_discount_whole" placeholder="whole">
+                        </div>
+                        <div class="col-md-4">
+                            <input type="number" style="text-align: center" class="form-control form-control-sm"
+                                name="mtrx_discount_percent" id="mtrx_discount_percent" placeholder="%">
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <label for="">Cash:</label>
+                        </div>
+                        <div class="col-md-4">
+                            <input type="number" class="form-control form-control-sm" name="mtrx_cash" id="mtrx_cash">
+                        </div>
+                        <div class="col-md-2">
+                            <label for="">Change:</label>
+                        </div>
+                        <div class="col-md-4">
+                            <input type="number" class="form-control form-control-sm" name="mtrx_change"
+                                id="mtrx_change" readonly>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <div class="row">
                         <div class="col-md-2">
                             <label for="">Total:</label>
                         </div>
@@ -159,7 +191,6 @@
                             <input type="number" class="form-control form-control-sm" name="mtrx_total" id="mtrx_total"
                                 readonly>
                         </div>
-
                         <div class="col-md-3">
                             <input type="number" class="form-control form-control-sm" name="mtrx_total_orders"
                                 id="mtrx_total_orders" readonly>
@@ -167,9 +198,8 @@
                         <div class="col-md-2">
                             <label for="">orders</label>
                         </div>
-
                         <div class="col-md-12 mt-2">
-                            <button class="btn btn-sm btn-success" type="submit" style="width: 100%">Save</button>
+                            <button class="btn btn-sm btn-success" type="submit" style="width: 100%">Confirm</button>
                         </div>
                     </div>
                 </div>
@@ -320,6 +350,70 @@
         updateTotals(); // Update the grand total
         toggleNoItemMessage(); // Update the visibility of the no-item message
     }
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Function to update totals and change based on inputs
+        function updateTotals() {
+            const totalInput = document.getElementById('mtrx_total');
+            const cashInput = document.getElementById('mtrx_cash');
+            const changeInput = document.getElementById('mtrx_change');
+            const discountWholeInput = document.getElementById('mtrx_discount_whole');
+            const discountPercentInput = document.getElementById('mtrx_discount_percent');
+            const totalOrdersInput = document.getElementById('mtrx_total_orders');
+            const confirmButton = document.querySelector('.btn-success'); // Confirm button selector
+
+            // Get the total value and calculate discounts
+            let total = parseFloat(totalInput.value) || 0;
+            let discountWhole = parseFloat(discountWholeInput.value) || 0;
+            let discountPercent = parseFloat(discountPercentInput.value) || 0;
+
+            // Apply whole discount
+            if (discountWhole > 0) {
+                total -= discountWhole;
+            }
+
+            // Apply percentage discount
+            if (discountPercent > 0) {
+                total -= (total * discountPercent / 100);
+            }
+
+            // Update total with discount
+            totalInput.value = total.toFixed(2);
+
+            // Update total orders input (if applicable)
+            totalOrdersInput.value = totalOrdersInput.value; // Update this with the actual total orders if needed
+
+            // Calculate change if cash is provided
+            const cash = parseFloat(cashInput.value) || 0;
+            let change = cash - total;
+
+            // Update change input
+            changeInput.value = change.toFixed(2);
+
+            // Enable/Disable Confirm button based on conditions
+            if (cash > 0 && change >= 0) {
+                confirmButton.disabled = false;
+            } else {
+                confirmButton.disabled = true;
+            }
+        }
+
+        // Attach event listeners to inputs
+        const inputs = [
+            document.getElementById('mtrx_cash'),
+            document.getElementById('mtrx_discount_whole'),
+            document.getElementById('mtrx_discount_percent')
+        ];
+
+        inputs.forEach(input => {
+            input.addEventListener('input', updateTotals);
+        });
+
+        // Ensure total is updated when the page loads
+        updateTotals();
+    });
 </script>
 
 <script>
