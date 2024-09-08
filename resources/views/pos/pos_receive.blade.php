@@ -208,6 +208,26 @@
     </div>
 </div>
 
+<!-- Confirmation Modal -->
+<div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmationModalLabel">Confirm Action</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to proceed with the action?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="confirmAction">Confirm</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         // Function to update order list
@@ -226,9 +246,9 @@
             });
 
             if (item) {
-                const quantityInput = item.querySelector('#trx_order_quantity');
-                const priceInput = item.querySelector('#trx_order_price');
-                const totalInput = item.querySelector('#trx_total_amount');
+                const quantityInput = item.querySelector('#mtrxo_order_quantity');
+                const priceInput = item.querySelector('#mtrx_order_price');
+                const totalInput = item.querySelector('#mtrx_total_amount');
 
                 if (quantityInput && priceInput && totalInput) {
                     quantityInput.value = parseInt(quantityInput.value) + parseInt(quantity);
@@ -248,22 +268,22 @@
                             <span class="info-box-text">${menu_name} - ${mcat_name}</span>
                             <div class="row">
                                 <div class="col-md-2">
-                                    <label for="trx_order_price">Price:</label>
+                                    <label for="mtrx_order_price">Price:</label>
                                 </div>
                                 <div class="col-md-5">
-                                    <input type="number" class="form-control form-control-border form-control-sm" id="trx_order_price" value="${itemPrice}" readonly required>
+                                    <input type="number" class="form-control form-control-border form-control-sm" id="mtrx_order_price" value="${itemPrice}" readonly required>
                                 </div>
                                 <div class="col-md-3">
-                                    <input type="number" class="form-control form-control-border form-control-sm" id="trx_order_quantity" value="${quantity}" data-price="${itemPrice}" required>
+                                    <input type="number" class="form-control form-control-border form-control-sm" id="mtrxo_order_quantity" value="${quantity}" data-price="${itemPrice}" required>
                                 </div>
                                 <div class="col-md-2">
-                                    <label for="trx_order_quantity">orders</label>
+                                    <label for="mtrxo_order_quantity">orders</label>
                                 </div>
                                 <div class="col-md-2">
-                                    <label for="trx_total_amount">Total:</label>
+                                    <label for="mtrx_total_amount">Total:</label>
                                 </div>
                                 <div class="col-md-5">
-                                    <input type="number" class="form-control form-control-border form-control-sm" id="trx_total_amount" value="${quantity * itemPrice}" readonly required>
+                                    <input type="number" class="form-control form-control-border form-control-sm" id="mtrx_total_amount" value="${quantity * itemPrice}" readonly required>
                                 </div>
                                 <div class="col-md-5">
                                     <input type="hidden" id="prd_id" value="" readonly>
@@ -277,7 +297,7 @@
                 orderList.appendChild(newItem);
 
                 // Add event listener to the new quantity input
-                newItem.querySelector('#trx_order_quantity').addEventListener('input', updateTotalForItem);
+                newItem.querySelector('#mtrxo_order_quantity').addEventListener('input', updateTotalForItem);
             }
 
             updateTotals();
@@ -288,8 +308,8 @@
         function updateTotalForItem(event) {
             const quantityInput = event.target;
             const item = quantityInput.closest('li');
-            const priceInput = item.querySelector('#trx_order_price');
-            const totalInput = item.querySelector('#trx_total_amount');
+            const priceInput = item.querySelector('#mtrx_order_price');
+            const totalInput = item.querySelector('#mtrx_total_amount');
 
             if (priceInput && totalInput) {
                 totalInput.value = quantityInput.value * priceInput.value;
@@ -301,8 +321,8 @@
 
         // Function to update totals
         function updateTotals() {
-            const totalQuantity = Array.from(document.querySelectorAll('#trx_order_quantity')).reduce((sum, input) => sum + parseInt(input.value) || 0, 0);
-            const grandTotal = Array.from(document.querySelectorAll('#trx_total_amount')).reduce((sum, input) => sum + parseInt(input.value) || 0, 0);
+            const totalQuantity = Array.from(document.querySelectorAll('#mtrxo_order_quantity')).reduce((sum, input) => sum + parseInt(input.value) || 0, 0);
+            const grandTotal = Array.from(document.querySelectorAll('#mtrx_total_amount')).reduce((sum, input) => sum + parseInt(input.value) || 0, 0);
 
             document.querySelector('#mtrx_total_orders').value = totalQuantity;
             document.querySelector('#mtrx_total').value = grandTotal;
@@ -378,9 +398,9 @@
         // Function to remove an item
         function removeItem(button) {
             const item = button.closest('li');
-            const quantityInput = item.querySelector('#trx_order_quantity');
-            const priceInput = item.querySelector('#trx_order_price');
-            const totalInput = item.querySelector('#trx_total_amount');
+            const quantityInput = item.querySelector('#mtrxo_order_quantity');
+            const priceInput = item.querySelector('#mtrx_order_price');
+            const totalInput = item.querySelector('#mtrx_total_amount');
 
             if (quantityInput && priceInput && totalInput) {
                 // Set values to 0 before removing the item

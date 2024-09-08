@@ -25,9 +25,9 @@ class POSController extends Controller
         return view('pos.pos_receive', compact('categories', 'menus'));
     }
 
-    public function pos_receive_add()
+    public function pos_confirm()
     {
-        return view('');
+
     }
 
     // @ OHAHA PURCHASES
