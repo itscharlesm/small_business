@@ -34,14 +34,14 @@
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-6">
-                <h1 class="m-0">Receive</h1>
+                <h1 class="m-0">Orders</h1>
             </div>
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
                     <li class="breadcrumb-item"><a
                             href="{{ action('App\Http\Controllers\AdminController@home') }}">Home</a></li>
                     <li class="breadcrumb-item">POS</li>
-                    <li class="breadcrumb-item">Receive</li>
+                    <li class="breadcrumb-item">Orders</li>
                 </ol>
             </div>
         </div>
@@ -60,8 +60,8 @@
                             <div class="info-box bg-gradient-warning hover-box">
                                 <span class="info-box-icon"><i class="fa fa-circle-info"></i></span>
                                 <div class="info-box-content">
-                                    <span class="info-box-text">Out of Stock</span>
-                                    <span class="info-box-number">4 Items</span>
+                                    <span class="info-box-text">Transactions Today</span>
+                                    <span class="info-box-number">5 Transactions</span>
                                 </div>
                             </div>
                         </div>
@@ -106,12 +106,12 @@
                             <table class="table table-striped table-hover" id="example2">
                                 <thead>
                                     <tr>
-                                        <th hidden></th>
-                                        <th>Menu Name</th>
-                                        <th>Category</th>
-                                        <th width="120px">Price</th>
-                                        <th width="20px">Quantity</th>
-                                        <th class="text-center">btn</th>
+                                        <th hidden style="text-align: center"></th>
+                                        <th style="text-align: center">Menu Name</th>
+                                        <th style="text-align: center">Category</th>
+                                        <th style="text-align: center" width="120px">Price</th>
+                                        <th style="text-align: center" width="20px">Quantity</th>
+                                        <th style="text-align: center" class="text-center">btn</th>
                                     </tr>
                                 </thead>
                                 <tbody class="">
@@ -121,18 +121,18 @@
                                                 action="{{ action('App\Http\Controllers\POSController@pos_purchase_add') }}"
                                                 class="{{ $menu->menu_id }}">
                                                 @csrf
-                                                <td hidden>
+                                                <td hidden style="text-align: vertical">
                                                     <input type="hidden" name="item_prd_id" id="item_prd_id"
                                                         value="{{ $menu->menu_id }}">
                                                 </td>
-                                                <td>{{ $menu->menu_name }}</td>
-                                                <td>{{ $menu->mcat_name }}</td>
-                                                <td width="120px">{{ $menu->menu_price }}</td>
-                                                <td width="20px">
+                                                <td style="vertical-align: middle">{{ $menu->menu_name }}</td>
+                                                <td style="vertical-align: middle">{{ $menu->mcat_name }}</td>
+                                                <td style="vertical-align: middle" width="120px">{{ $menu->menu_price }}</td>
+                                                <td style="vertical-align: middle" width="20px">
                                                     <input class="form-control" type="number" name="item_quantity"
                                                         id="item_quantity" step="1" max="50" placeholder="0" required>
                                                 </td>
-                                                <td class="text-center">
+                                                <td style="vertical-align: middle" class="text-center">
                                                     <button type="submit" class="btn btn-sm btn-primary button-item-add">
                                                         <i class="fa-solid fa-plus"></i>
                                                     </button>
