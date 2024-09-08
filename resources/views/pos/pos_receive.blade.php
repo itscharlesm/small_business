@@ -57,7 +57,7 @@
                     <div class="row">
                         <div class="col-md-4">
                             <div class="info-box bg-gradient-warning hover-box">
-                                <span class="info-box-icon"><i class="fa fa-circle-info"></i></span>
+                                <span class="info-box-icon"><i class="fa fa-peso-sign"></i></span>
                                 <div class="info-box-content">
                                     <span class="info-box-text">Transactions Today</span>
                                     <span class="info-box-number">5 Transactions</span>
@@ -202,6 +202,7 @@
                 if (quantityInput && priceInput && totalInput) {
                     quantityInput.value = parseInt(quantityInput.value) + parseInt(quantity);
                     totalInput.value = quantityInput.value * priceInput.value;
+                    quantityInput.dispatchEvent(new Event('input')); // Trigger the input event to recalculate totals
                 } else {
                     console.error('Quantity, Price, or Total input not found.');
                 }
@@ -211,42 +212,59 @@
                 newItem.style.listStyle = 'none';
 
                 newItem.innerHTML = `
-                <div class="info-box">
-                    <div class="info-box-content">
-                        <span class="info-box-text">${itemName} - ${categoryName}</span>
-                        <div class="row">
-                            <div class="col-md-2">
-                                <label for="po_product_price">Price:</label>
-                            </div>
-                            <div class="col-md-5">
-                                <input type="number" class="form-control form-control-border form-control-sm" id="po_product_price" value="${itemPrice}" readonly required>
-                            </div>
-                            <div class="col-md-3">
-                                <input type="number" class="form-control form-control-border form-control-sm" id="po_prd_quantity" value="${quantity}" data-price="${itemPrice}" required>
-                            </div>
-                            <div class="col-md-2">
-                                <label for="po_prd_quantity">qty.</label>
-                            </div>
-                            <div class="col-md-2">
-                                <label for="po_total_amount">Total:</label>
-                            </div>
-                            <div class="col-md-5">
-                                <input type="number" class="form-control form-control-border form-control-sm" id="po_total_amount" value="${quantity * itemPrice}" readonly required>
-                            </div>
-                            <div class="col-md-5">
-                                <input type="hidden" id="prd_id" value="" readonly>
-                                <button class="btn btn-sm btn-danger mb-0 pb-0 mt-1" style="width: 100%" type="button" onclick="removeItem(this)"><i class="fa fa-trash" aria-hidden="true"></i></button>
-                            </div>
+            <div class="info-box">
+                <div class="info-box-content">
+                    <span class="info-box-text">${itemName} - ${categoryName}</span>
+                    <div class="row">
+                        <div class="col-md-2">
+                            <label for="po_product_price">Price:</label>
+                        </div>
+                        <div class="col-md-5">
+                            <input type="number" class="form-control form-control-border form-control-sm" id="po_product_price" value="${itemPrice}" readonly required>
+                        </div>
+                        <div class="col-md-3">
+                            <input type="number" class="form-control form-control-border form-control-sm" id="po_prd_quantity" value="${quantity}" data-price="${itemPrice}" required>
+                        </div>
+                        <div class="col-md-2">
+                            <label for="po_prd_quantity">qty.</label>
+                        </div>
+                        <div class="col-md-2">
+                            <label for="po_total_amount">Total:</label>
+                        </div>
+                        <div class="col-md-5">
+                            <input type="number" class="form-control form-control-border form-control-sm" id="po_total_amount" value="${quantity * itemPrice}" readonly required>
+                        </div>
+                        <div class="col-md-5">
+                            <input type="hidden" id="prd_id" value="" readonly>
+                            <button class="btn btn-sm btn-danger mb-0 pb-0 mt-1" style="width: 100%" type="button" onclick="removeItem(this)"><i class="fa fa-trash" aria-hidden="true"></i></button>
                         </div>
                     </div>
                 </div>
-            `;
+            </div>
+        `;
 
                 orderList.appendChild(newItem);
+
+                // Add event listener to the new quantity input
+                newItem.querySelector('#po_prd_quantity').addEventListener('input', updateTotalForItem);
             }
 
             updateTotals();
             toggleNoItemMessage();
+        }
+
+        function updateTotalForItem(event) {
+            const quantityInput = event.target;
+            const item = quantityInput.closest('li');
+            const priceInput = item.querySelector('#po_product_price');
+            const totalInput = item.querySelector('#po_total_amount');
+
+            if (priceInput && totalInput) {
+                totalInput.value = quantityInput.value * priceInput.value;
+                updateTotals(); // Update the grand total
+            } else {
+                console.error('Price or Total input not found.');
+            }
         }
 
         function updateTotals() {
@@ -288,7 +306,6 @@
         toggleNoItemMessage(); // Call this function to update message visibility after removing an item
     }
 </script>
-
 
 <script>
     // Select Categories
