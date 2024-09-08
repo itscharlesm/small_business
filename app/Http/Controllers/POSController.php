@@ -10,21 +10,20 @@ use DB;
 class POSController extends Controller
 {
     public function pos_receive_main()
-{
-    $categories = DB::table('menu_categories')
-        ->where('mcat_active', '=', 1)
-        ->get();
+    {
+        $categories = DB::table('menu_categories')
+            ->where('mcat_active', '=', 1)
+            ->get();
 
-    // Join the menus with menu_categories to get mcat_name
-    $menus = DB::table('menus')
-        ->join('menu_categories', 'menus.mcat_id', '=', 'menu_categories.mcat_id')
-        ->where('menus.menu_active', '=', 1)
-        ->select('menus.*', 'menu_categories.mcat_name') // Select the menu fields and the category name
-        ->get();
+        // Join the menus with menu_categories to get mcat_name
+        $menus = DB::table('menus')
+            ->join('menu_categories', 'menus.mcat_id', '=', 'menu_categories.mcat_id')
+            ->where('menus.menu_active', '=', 1)
+            ->select('menus.*', 'menu_categories.mcat_name')
+            ->get();
 
-    return view('pos.pos_receive', compact('categories', 'menus'));
-}
-
+        return view('pos.pos_receive', compact('categories', 'menus'));
+    }
 
     public function pos_receive_add()
     {

@@ -91,8 +91,8 @@
                     <div class="row mb-3">
                         <div class="col-md-12">
                             <div class="d-flex align-items-center">
-                                <label for="cat_id mt-1" style="flex-basis: 20%" class="">Categories: </label>
-                                <select class="form-control" name="cat_id" id="cat_id">
+                                <label for="mcat_id mt-1" style="flex-basis: 20%" class="">Categories: </label>
+                                <select class="form-control" name="mcat_id" id="mcat_id">
                                     <option value="">-- ALL --</option>
                                     @foreach ($categories as $category)
                                         <option value="{{ $category->mcat_name }}">{{ $category->mcat_name }}</option>
@@ -151,7 +151,7 @@
             <div class="card my-0 py-0" style="min-height: 555px; max-height: 560px">
                 
                 <div class="card-body item-content pt-1">
-                    <form method="POST" action="{{ action('App\Http\Controllers\POSController@pos_purchase_add_transaction') }}">
+                    <form method="POST" action="">
                         @csrf
                         <hr>
                         <label for="">Orders:</label>
@@ -222,12 +222,12 @@
 </div>
 
 <script>
-    document.getElementById('cat_id').addEventListener('change', function() {
+    document.getElementById('mcat_id').addEventListener('change', function() {
         let selectedCategory = this.value;
         let tableRows = document.querySelectorAll('tbody tr');
 
         tableRows.forEach(row => {
-            let categoryCell = row.cells[3]; // The category is in the third cell
+            let categoryCell = row.cells[2]; // The category is in the third cell
             let categoryValue = categoryCell.textContent.trim();
 
             if (selectedCategory === "" || categoryValue === selectedCategory) {
