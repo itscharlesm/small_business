@@ -199,7 +199,7 @@
                             <label for="">orders</label>
                         </div>
                         <div class="col-md-12 mt-2">
-                            <button class="btn btn-sm btn-success" type="submit" style="width: 100%">Confirm</button>
+                            <a class="btn btn-sm btn-success" id="confirmButton" style="width: 100%">Confirm</a>
                         </div>
                     </div>
                 </div>
@@ -314,7 +314,7 @@
             const discountWholeInput = document.getElementById('mtrx_discount_whole');
             const discountPercentInput = document.getElementById('mtrx_discount_percent');
             const totalOrdersInput = document.getElementById('mtrx_total_orders');
-            const confirmButton = document.querySelector('.btn-success'); // Confirm button selector
+            const confirmButton = document.getElementById('confirmButton');
 
             // Get the total value and calculate discounts
             let total = parseFloat(totalInput.value) || 0;
@@ -346,9 +346,9 @@
 
             // Enable/Disable Confirm button based on conditions
             if (cash > 0 && change >= 0) {
-                confirmButton.disabled = false;
+                confirmButton.classList.remove('disabled'); // Remove disabled class
             } else {
-                confirmButton.disabled = true;
+                confirmButton.classList.add('disabled'); // Add disabled class
             }
         }
 
