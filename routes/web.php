@@ -37,25 +37,11 @@ use App\Http\Controllers\AnnouncementController;
 Route::get('/', [MainController::class, 'main']);
 Route::get('register', [MainController::class, 'registration']);
 
-Route::post('register', [UserController::class, 'register']);
-// Route::get('/borrower', [MainController::class, 'mainBorrower']);
-
-// // Route::get('malapatan', [MainController::class, 'malapatan']);
-// Route::get('main-account/{acc_id}', [MainController::class, 'mainAccount']);
-
-// Route::get('/privacy-policy', [MainController::class, 'privacypolicy']);
-
-// // Banner
-// Route::get('/banner/main', [BannerController::class, 'main']);
-// Route::get('/banner/delete/{ban_id}', [BannerController::class, 'delete']);
-// Route::post('/banner/save', [BannerController::class, 'save']);
-// Route::post('/banner/update', [BannerController::class, 'update']);
+// Route::post('register', [UserController::class, 'register']);
 
 // //Login
 Route::post('/validate', [LoginController::class, 'validateUser']);
 Route::get('logout', [LoginController::class, 'logout']);
-// Route::post('loginAccount', [LoginController::class, 'loginAccount']);
-// Route::get('forgot-password', [LoginController::class, 'forgotPassword']);
 
 // User
 // Route::post('user/register', [UserController::class, 'register']);
@@ -79,6 +65,10 @@ Route::get('announcement/delete/{ann_uuid}', [AnnouncementController::class, 'de
 Route::get('admin/home', [AdminController::class, 'home']);
 Route::get('admin/setup', [AdminController::class, 'setup']);
 
+// Point of Sale
+Route::get('pos/receive/new-transaction', [POSController::class, 'pos_receive_main']);
+Route::post('pos/receive/new-transaction/payment', [POSController::class, 'payment']);
+
 
 
 
@@ -93,10 +83,6 @@ Route::post('admin/utility/clients/add', [UtilityController::class, 'add_clients
 
 Route::get('admin/utility/suppliers', [UtilityController::class, 'suppliers_manage']);
 Route::post('admin/utility/suppliers/add', [UtilityController::class, 'add_suppliers_manage']);
-
-// Point of Sale
-Route::get('pos/receive/new-transaction', [POSController::class, 'pos_receive_main']);
-Route::post('pos/receive/new-transaction/payment', [POSController::class, 'payment']);
 
 // ? PURCHASE
 Route::get('pos/purchase/new-transaction', [POSController::class, 'pos_purchase_main']);

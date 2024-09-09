@@ -77,11 +77,11 @@
                 <header>
                     <div class="row">
                         <div class="col-md-4">
-                            <div class="info-box bg-gradient-warning hover-box">
+                            <div class="info-box bg-gradient-success hover-box">
                                 <span class="info-box-icon"><i class="fa fa-peso-sign"></i></span>
                                 <div class="info-box-content">
                                     <span class="info-box-text">Transactions Today</span>
-                                    <span class="info-box-number">5 Transactions</span>
+                                    <span class="info-box-number">{{ getTransactionNumberToday() }}</span>
                                 </div>
                             </div>
                         </div>
