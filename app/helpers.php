@@ -2,25 +2,19 @@
 
     function getTransactionNumber()
     {
-        $latest_txn_number = DB::table('transactions')
-            ->select('txn_number')
-            ->orderBy('txn_id', 'desc')
+        $latest_mtrx_number = DB::table('menu_transactions')
+            ->select('mtrx_id')
+            ->orderBy('mtrx_id', 'desc')
             ->first();
 
-        if (!$latest_txn_number) {
-            // $characters = '0123456789';
-            // $txn_number = '';
-    
-            // for ($i = 0; $i < 12; $i++) {
-            //     $txn_number .= $characters[mt_rand(0, strlen($characters) - 1)];
-            // }
-            $txn_number = '000001';
+        if (!$latest_mtrx_number) {
+            $mtrx_number = '000001';
         } else {
-            $lastNumber = intval($latest_txn_number->txn_number);
-            $txn_number = str_pad($lastNumber + 1, 6, '0', STR_PAD_LEFT);
+            $lastNumber = intval($latest_mtrx_number->mtrx_id);
+            $mtrx_number = str_pad($lastNumber + 1, 6, '0', STR_PAD_LEFT);
         }
 
-       return $txn_number;
+       return $mtrx_number;
     }
 
     // function hasUploadedPhotos($inno_id)
