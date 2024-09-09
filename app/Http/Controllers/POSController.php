@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use DB;
+use Carbon\Carbon;
 
 
 class POSController extends Controller
@@ -27,60 +28,59 @@ class POSController extends Controller
 
     public function pos_confirm(Request $request)
 {
-    // Validate incoming request data
+    // Validate request data
     $validated = $request->validate([
-        'mtrx_total_orders' => 'required|integer',
-        'mtrx_total' => 'required|numeric',
-        'mtrx_cash' => 'required|numeric',
-        'mtrx_change' => 'required|numeric',
-        'mtrx_discount_whole' => 'nullable|numeric',
-        'mtrx_discount_percent' => 'nullable|numeric',
-        'order_items' => 'required|array', // Array of order items
-        'order_items.*.menu_id' => 'required|integer',
-        'order_items.*.mcat_id' => 'required|integer',
-        'order_items.*.quantity' => 'required|integer|min:1',
+        'mtrx_cash' => 'required|numeric|min:0',
+        'mtrx_discount_whole' => 'nullable|numeric|min:0',
+        'mtrx_discount_percent' => 'nullable|numeric|min:0|max:100',
+        'mtrx_total' => 'required|numeric|min:0',
+        'mtrx_total_orders' => 'required|numeric|min:0',
+        'orders' => 'required|array|min:1',  // Assuming 'orders' is the array of items
+        'orders.*.menu_name' => 'required|string',
+        'orders.*.mcat_name' => 'required|string',
+        'orders.*.mtrxo_order_quantity' => 'required|numeric|min:1',
+        'orders.*.mtrx_order_price' => 'required|numeric|min:0',
     ]);
 
-    // Start a transaction
+    // Begin transaction
     DB::beginTransaction();
 
     try {
-        // Create a new menu transaction
+        // Insert into menu_transactions
         $menuTransaction = DB::table('menu_transactions')->insertGetId([
             'mtrx_total_orders' => $validated['mtrx_total_orders'],
             'mtrx_total' => $validated['mtrx_total'],
             'mtrx_cash' => $validated['mtrx_cash'],
-            'mtrx_change' => $validated['mtrx_change'],
+            'mtrx_change' => $validated['mtrx_cash'] - $validated['mtrx_total'], // Assuming this calculation
             'mtrx_discount_whole' => $validated['mtrx_discount_whole'] ?? null,
             'mtrx_discount_percent' => $validated['mtrx_discount_percent'] ?? null,
-            'mtrx_date_created' => now(),
+            'mtrx_date_created' => Carbon::now(),
             'mtrx_created_by' => session('usr_id'),
-            'mtrx_active' => 1,
+            'mtrx_active' => 1
         ]);
 
-        // Insert each order item into menu_transaction_orders
-        foreach ($validated['order_items'] as $item) {
+        // Insert each order into menu_transaction_orders
+        foreach ($validated['orders'] as $order) {
             DB::table('menu_transaction_orders')->insert([
                 'mtrx_id' => $menuTransaction,
-                'menu_id' => $item['menu_id'],
-                'mcat_id' => $item['mcat_id'],
-                'mtrxo_order_quantity' => $item['quantity'],
-                'mtrxo_date_created' => now(),
+                'menu_name' => $order['menu_name'],
+                'mcat_name' => $order['mcat_name'],
+                'mtrxo_order_quantity' => $order['mtrxo_order_quantity'],
+                'mtrxo_date_created' => Carbon::now(),
                 'mtrxo_created_by' => session('usr_id'),
-                'mtrxo_active' => 1,
+                'mtrxo_active' => 1
             ]);
         }
 
         // Commit the transaction
         DB::commit();
 
-        // Redirect or return response
-        return redirect()->route('some.route.name')->with('success', 'Transaction confirmed successfully.');
+        // Redirect or return success response
+        return redirect()->route('pos.index')->with('success', 'Transaction completed successfully.');
     } catch (\Exception $e) {
-        // Rollback transaction on error
-        DB::rollback();
-        // Handle the exception (log it, return error message, etc.)
-        return redirect()->back()->withErrors(['error' => 'Failed to complete transaction. Please try again.']);
+        // Rollback the transaction on error
+        DB::rollBack();
+        return redirect()->back()->withErrors('Transaction failed: ' . $e->getMessage());
     }
 }
 

@@ -141,7 +141,6 @@
             <form action="{{ action('App\Http\Controllers\POSController@pos_confirm') }}" method="POST">
                 {{ csrf_field() }}
                 <div class="card my-0 py-0" style="min-height: 555px; max-height: 560px">
-
                     <div class="card-body item-content pt-1">
                         <hr>
                         <label for="">Orders:</label>
@@ -200,8 +199,7 @@
                                 <label for="">orders</label>
                             </div>
                             <div class="col-md-12 mt-2">
-                                <button class="btn btn-sm btn-success" id="confirmButton"
-                                    style="width: 100%">Confirm</button>
+                                <button class="btn btn-sm btn-success" id="confirmButton" style="width: 100%" type="submit">Confirm</button>
                             </div>
                         </div>
                     </div>
