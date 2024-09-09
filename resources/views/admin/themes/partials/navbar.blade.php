@@ -9,13 +9,6 @@
 
     <!-- Right navbar links -->
     <ul class="navbar-nav ml-auto">
-    
-        {{-- <li class="nav-item">
-            <a class="btn btn-default" href="javascript:void(0)">
-                <i class="fas fa-coins" style="color:#ffb400;"></i>
-                <strong>{{ get_remaining_daily_credits() }}</strong> credits
-            </a>
-        </li> --}}
 
         <li class="nav-item">
             <a class="nav-link" data-widget="fullscreen" href="#" role="button">

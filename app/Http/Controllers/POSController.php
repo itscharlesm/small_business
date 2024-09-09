@@ -24,7 +24,7 @@ class POSController extends Controller
             ->select('menus.*', 'menu_categories.mcat_name')
             ->get();
 
-        return view('pos.pos_receive', compact('categories', 'menus'));
+        return view('admin.pos.point_of_sale', compact('categories', 'menus'));
     }
 
     public function payment(Request $request)

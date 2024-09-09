@@ -48,21 +48,14 @@
                             <a href="{{ action('App\Http\Controllers\POSController@pos_receive_main') }}"
                                 class="nav-link {{ request()->is('pos/receive/*') ? 'active' : '' }}">
                                 <i class="far fa-circle nav-icon"></i>
-                                <p>Delivery Receive</p>
+                                <p>Orders</p>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a href="{{ action('App\Http\Controllers\POSController@pos_purchase_main') }}"
                                 class="nav-link {{ request()->is('pos/purchase/*') ? 'active' : '' }}">
                                 <i class="far fa-circle nav-icon"></i>
-                                <p>Product Order</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{ action('App\Http\Controllers\POSController@pos_damages_main') }}"
-                                class="nav-link {{ request()->is('pos/damages/*') ? 'active' : '' }}">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Record Damages</p>
+                                <p>Transaction History</p>
                             </a>
                         </li>
                     </ul>
