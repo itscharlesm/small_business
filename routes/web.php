@@ -71,82 +71,16 @@ Route::post('user/update-password', [UserController::class, 'updatePassword2']);
 // Route::get('user/list/add-admin/{usr_uuid}', [UserController::class, 'addAdmin']);
 // Route::get('user/list/remove-admin/{usr_uuid}', [UserController::class, 'removeAdmin']);
 
-//Announcements
+// Announcements
 Route::post('announcement/save', [AnnouncementController::class, 'save']);
 Route::get('announcement/delete/{ann_uuid}', [AnnouncementController::class, 'delete']);
 
 // Admin
 Route::get('admin/home', [AdminController::class, 'home']);
 Route::get('admin/setup', [AdminController::class, 'setup']);
-// Route::get('admin/welcome', [AdminController::class, 'welcome']);
-// Route::get('admin/dashboard', [AdminController::class, 'dashboard']);
-
-// Enrollment
-Route::post('admin/setup/step-one', [EnrollController::class, 'enroll']);
-
-// Route::get('dashboard', [DashboardController::class, 'main']);
-// Route::post('dashboard', [DashboardController::class, 'search']);
-
-// // GOOGLE
-// Route::get('/auth/{provider}/redirect', [GoogleController::class, 'redirect']);
-// Route::get('auth/{provider}/callback', [GoogleController::class, 'callback']);
-
-// //Contact
-// Route::get('contacts/manage', [ContactController::class, 'manage']);
-// Route::post('contacts/find', [ContactController::class, 'find']);
-// Route::post('contacts/save', [ContactController::class, 'save']);
-// Route::get('contacts/edit/{con_uuid}', [ContactController::class, 'edit']);
-// Route::post('contacts/update', [ContactController::class, 'update']);
-// Route::get('contacts/delete/{con_uuid}', [ContactController::class, 'delete']);
-// Route::get('contacts/categories', [ContactController::class, 'categories']);
-// Route::post('contacts/save-category', [ContactController::class, 'saveCategory']);
-// Route::get('contacts/delete-category/{cat_uuid}', [ContactController::class, 'deleteCategory']);
-// Route::post('contacts/update-category', [ContactController::class, 'updateCategory']);
-
-// //SMS
-// Route::get('sms/compose/individual', [SMSController::class, 'composeIndividual']);
-// Route::post('sms/send/individual', [SMSController::class, 'sendIndividual']);
-// Route::get('sms/compose/category', [SMSController::class, 'composeCategory']);
-// Route::post('sms/send/category', [SMSController::class, 'sendCategory']);
-// Route::get('sms/history', [SMSController::class, 'history']);
-// Route::post('sms/history', [SMSController::class, 'history2']);
-
-// // Equipment
-// Route::get('equipment/manage', [EquipmentController::class, 'manage']);
-// Route::post('equipment/save', [EquipmentController::class, 'save']);
-// Route::post('equipment/update', [EquipmentController::class, 'update']);
-// Route::get('equipment/activate/{eqp_uuid}', [EquipmentController::class, 'activate']);
-// Route::get('equipment/deactivate/{eqp_uuid}', [EquipmentController::class, 'deactivate']);
-
-// // Borrow Equipment
-// Route::get('borrow/main', [BorrowController::class, 'main']);
-// Route::post('borrow/borrow-equipment', [BorrowController::class, 'borrow']);
-// Route::get('borrow/history', [BorrowController::class, 'history']);
-// Route::get('borrow/overdue', [BorrowController::class, 'overdue']);
-// Route::get('borrow/requests', [BorrowController::class, 'requests']);
-// Route::get('borrow/unreturned', [BorrowController::class, 'unreturned']);
-// Route::get('borrow/approve/{res_uuid}', [BorrowController::class, 'approve']);
-// Route::get('borrow/disapprove/{res_uuid}', [BorrowController::class, 'disapprove']);
-// Route::get('borrow/history-all', [BorrowController::class, 'historyAll']);
-// Route::get('borrow/return/{res_uuid}', [BorrowController::class, 'return']);
-// Route::get('borrow/search', [BorrowController::class, 'search']);
-// Route::post('borrow/find', [BorrowController::class, 'find']);
-
-// // Borrower
-// Route::get('borrower/manage', [BorrowerController::class, 'manage']);
-// Route::post('borrower/save', [BorrowerController::class, 'save']);
-// Route::post('borrower/update', [BorrowerController::class, 'update']);
-// Route::get('borrower/activate/{bor_uuid}', [BorrowerController::class, 'activate']);
-// Route::get('borrower/deactivate/{bor_uuid}', [BorrowerController::class, 'deactivate']);
-// Route::get('borrower/reset/{bor_uuid}', [BorrowerController::class, 'reset']);
-
-// // QR
-// Route::get('qr/generate/{qrdata}', [QRController::class, 'generate']);
 
 
-// //Chart Js
-// Route::post('/admin/search', [ChartController::class, 'search']);
-// Route::get('/default-charts', [ChartController::class, 'defaultCharts']);
+
 
 Route::get('admin/utility/products', [UtilityController::class, 'product_details']);
 Route::post('admin/utility/products/add', [UtilityController::class, 'add_new_product']);
@@ -160,11 +94,9 @@ Route::post('admin/utility/clients/add', [UtilityController::class, 'add_clients
 Route::get('admin/utility/suppliers', [UtilityController::class, 'suppliers_manage']);
 Route::post('admin/utility/suppliers/add', [UtilityController::class, 'add_suppliers_manage']);
 
-// @ POS CONTROLS
-// ? RECEIVE
+// Point of Sale
 Route::get('pos/receive/new-transaction', [POSController::class, 'pos_receive_main']);
-Route::post('pos-confirm', [POSController::class, 'confirm']);
-Route::post('pos/receive/new-transaction/add', [POSController::class, 'pos_receive_add']);
+Route::post('pos/receive/new-transaction/payment', [POSController::class, 'payment']);
 
 // ? PURCHASE
 Route::get('pos/purchase/new-transaction', [POSController::class, 'pos_purchase_main']);

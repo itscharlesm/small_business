@@ -159,7 +159,7 @@
             </div>
         </div>
         <div class="col-md-4">
-            <form action="{{ action('App\Http\Controllers\POSController@confirm') }}" method="POST">
+            <form action="{{ action('App\Http\Controllers\POSController@payment') }}" method="POST">
                 @csrf
                 <div class="card my-0 py-0" style="min-height: 555px; max-height: 560px">
                     <div class="card-body item-content pt-1">
