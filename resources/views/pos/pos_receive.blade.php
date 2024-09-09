@@ -215,43 +215,41 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        // Function to update order list
-        function updateOrderList(menu_name, itemPrice, mcat_name, quantity) {
-            const orderList = document.querySelector('.item-content ul');
-            const noItemMessage = document.querySelector('.item-content ul p');
-            const hiddenFieldsContainer = document.querySelector('.hidden-fields-container');
+    // Function to update order list
+    function updateOrderList(menu_name, itemPrice, mcat_name, quantity) {
+        const orderList = document.querySelector('.item-content ul');
 
-            if (!orderList) {
-                console.error('Order list element not found.');
-                return;
-            }
+        if (!orderList) {
+            console.error('Order list element not found.');
+            return;
+        }
 
-            let item = Array.from(orderList.children).find(li => {
-                const textElement = li.querySelector('.info-box-text');
-                return textElement && textElement.textContent.includes(menu_name);
-            });
+        let item = Array.from(orderList.children).find(li => {
+            const textElement = li.querySelector('.info-box-text');
+            return textElement && textElement.textContent.includes(menu_name);
+        });
 
-            if (item) {
-                const quantityInput = item.querySelector('#mtrxo_order_quantity');
-                const priceInput = item.querySelector('#mtrxo_order_price');
-                const totalInput = item.querySelector('#mtrxo_total_amount');
+        if (item) {
+            const quantityInput = item.querySelector('#mtrxo_order_quantity');
+            const priceInput = item.querySelector('#mtrxo_order_price');
+            const totalInput = item.querySelector('#mtrxo_total_amount');
 
-                if (quantityInput && priceInput && totalInput) {
-                    quantityInput.value = parseInt(quantityInput.value) + parseInt(quantity);
-                    totalInput.value = quantityInput.value * priceInput.value;
-                    quantityInput.dispatchEvent(new Event('input')); // Trigger the input event to recalculate totals
+            if (quantityInput && priceInput && totalInput) {
+                quantityInput.value = parseInt(quantityInput.value) + parseInt(quantity);
+                totalInput.value = quantityInput.value * priceInput.value;
+                quantityInput.dispatchEvent(new Event('input')); // Trigger the input event to recalculate totals
 
-                    // Update hidden fields
-                    updateHiddenFields(menu_name, itemPrice, mcat_name, quantityInput.value, totalInput.value);
-                } else {
-                    console.error('Quantity, Price, or Total input not found.');
-                }
+                // Update hidden fields
+                updateHiddenFields(menu_name, itemPrice, mcat_name, quantityInput.value, totalInput.value);
             } else {
-                const newItem = document.createElement('li');
-                newItem.className = 'ml-0 pl-0';
-                newItem.style.listStyle = 'none';
+                console.error('Quantity, Price, or Total input not found.');
+            }
+        } else {
+            const newItem = document.createElement('li');
+            newItem.className = 'ml-0 pl-0';
+            newItem.style.listStyle = 'none';
 
-                newItem.innerHTML = `
+            newItem.innerHTML = `
             <div class="info-box">
                 <div class="info-box-content">
                     <span class="info-box-text">${menu_name} - ${mcat_name}</span>
@@ -283,179 +281,191 @@
             </div>
         `;
 
-                orderList.appendChild(newItem);
+            orderList.appendChild(newItem);
 
-                // Add event listener to the new quantity input
-                newItem.querySelector('#mtrxo_order_quantity').addEventListener('input', updateTotalForItem);
+            // Add event listener to the new quantity input
+            newItem.querySelector('#mtrxo_order_quantity').addEventListener('input', updateTotalForItem);
 
-                // Add hidden fields for the new item
-                addHiddenFields(menu_name, itemPrice, mcat_name, quantity, quantity * itemPrice);
-            }
-
-            updateTotals();
-            toggleNoItemMessage();
+            // Add hidden fields for the new item
+            addHiddenFields(menu_name, itemPrice, mcat_name, quantity, quantity * itemPrice);
         }
 
-        function addHiddenFields(menu_name, itemPrice, mcat_name, quantity, total) {
-            const hiddenFieldsContainer = document.querySelector('.hidden-fields-container');
+        updateTotals();
+        toggleNoItemMessage();
+    }
 
-            const hiddenFieldsHTML = `
-        <input type="hidden" name="menu_name[]" value="${menu_name}">
-        <input type="hidden" name="mcat_name[]" value="${mcat_name}">
-        <input type="hidden" name="mtrxo_order_price[]" value="${itemPrice}">
-        <input type="hidden" name="mtrxo_order_quantity[]" value="${quantity}">
-        <input type="hidden" name="mtrxo_total_amount[]" value="${total}">
+    function addHiddenFields(menu_name, itemPrice, mcat_name, quantity, total) {
+        const hiddenFieldsContainer = document.querySelector('.hidden-fields-container');
+
+        const hiddenFieldsHTML = `
+        <input type="text" name="menu_name[]" value="${menu_name}">
+        <input type="text" name="mcat_name[]" value="${mcat_name}">
+        <input type="text" name="mtrxo_order_price[]" value="${itemPrice}">
+        <input type="text" name="mtrxo_order_quantity[]" value="${quantity}">
+        <input type="text" name="mtrxo_total_amount[]" value="${total}">
     `;
 
-            hiddenFieldsContainer.insertAdjacentHTML('beforeend', hiddenFieldsHTML);
-        }
+        hiddenFieldsContainer.insertAdjacentHTML('beforeend', hiddenFieldsHTML);
+    }
 
-        function updateHiddenFields(menu_name, itemPrice, mcat_name, quantity, total) {
-            const hiddenFieldsContainer = document.querySelector('.hidden-fields-container');
+    function updateHiddenFields(menu_name, itemPrice, mcat_name, quantity, total) {
+        const hiddenFieldsContainer = document.querySelector('.hidden-fields-container');
 
-            const inputs = hiddenFieldsContainer.querySelectorAll(`input[name="menu_name[]"][value="${menu_name}"]`);
-            inputs.forEach(input => {
-                const quantityInput = input.parentElement.querySelector('input[name="mtrxo_order_quantity[]"]');
-                const totalInput = input.parentElement.querySelector('input[name="mtrxo_total_amount[]"]');
+        const items = Array.from(hiddenFieldsContainer.querySelectorAll(`input[name="menu_name[]"]`));
+        const index = items.findIndex(input => input.value === menu_name);
 
-                if (quantityInput && totalInput) {
-                    quantityInput.value = quantity;
-                    totalInput.value = total;
-                }
-            });
-        }
-
-        // Function to update total for an item
-        function updateTotalForItem(event) {
-            const quantityInput = event.target;
-            const item = quantityInput.closest('li');
-            const priceInput = item.querySelector('#mtrxo_order_price');
-            const totalInput = item.querySelector('#mtrxo_total_amount');
-
-            if (priceInput && totalInput) {
-                totalInput.value = quantityInput.value * priceInput.value;
-                updateTotals(); // Update the grand total
-            } else {
-                console.error('Price or Total input not found.');
+        if (index !== -1) {
+            const baseElement = items[index].closest('.hidden-fields-container');
+            if (baseElement) {
+                baseElement.querySelector('input[name="mtrxo_order_quantity[]"]').value = quantity;
+                baseElement.querySelector('input[name="mtrxo_total_amount[]"]').value = total;
             }
         }
+    }
 
-        // Function to update totals
-        function updateTotals() {
-            const totalQuantity = Array.from(document.querySelectorAll('#mtrxo_order_quantity')).reduce((sum, input) => sum + parseInt(input.value) || 0, 0);
-            const grandTotal = Array.from(document.querySelectorAll('#mtrxo_total_amount')).reduce((sum, input) => sum + parseInt(input.value) || 0, 0);
+    function removeHiddenFields(menu_name) {
+        const hiddenFieldsContainer = document.querySelector('.hidden-fields-container');
+        const items = Array.from(hiddenFieldsContainer.querySelectorAll(`input[name="menu_name[]"]`));
 
-            document.querySelector('#mtrx_total_orders').value = totalQuantity;
-            document.querySelector('#mtrx_total').value = grandTotal;
-
-            // Update totals and change based on inputs
-            const totalInput = document.getElementById('mtrx_total');
-            const cashInput = document.getElementById('mtrx_cash');
-            const changeInput = document.getElementById('mtrx_change');
-            const discountWholeInput = document.getElementById('mtrx_discount_whole');
-            const discountPercentInput = document.getElementById('mtrx_discount_percent');
-            const totalOrdersInput = document.getElementById('mtrx_total_orders');
-            const confirmButton = document.getElementById('confirmButton');
-
-            // Get the total value and calculate discounts
-            let total = parseFloat(totalInput.value) || 0;
-            let discountWhole = parseFloat(discountWholeInput.value) || 0;
-            let discountPercent = parseFloat(discountPercentInput.value) || 0;
-
-            // Apply whole discount
-            if (discountWhole > 0) {
-                total -= discountWhole;
+        items.forEach(item => {
+            if (item.value === menu_name) {
+                item.closest('div').remove(); // Remove the related hidden fields
             }
-
-            // Apply percentage discount
-            if (discountPercent > 0) {
-                total -= (total * discountPercent / 100);
-            }
-
-            // Update total with discount
-            totalInput.value = total.toFixed(2);
-
-            // Update total orders input (if applicable)
-            totalOrdersInput.value = totalOrdersInput.value; // Update this with the actual total orders if needed
-
-            // Calculate change if cash is provided
-            const cash = parseFloat(cashInput.value) || 0;
-            let change = cash - total;
-
-            // Update change input
-            changeInput.value = change.toFixed(2);
-
-            // Enable/Disable Confirm button based on conditions
-            if (cash > 0 && change >= 0) {
-                confirmButton.classList.remove('disabled'); // Remove disabled class
-            } else {
-                confirmButton.classList.add('disabled'); // Add disabled class
-            }
-        }
-
-        // Function to toggle no-item message
-        function toggleNoItemMessage() {
-            const orderList = document.querySelector('.item-content ul');
-            const noItemMessage = document.querySelector('.item-content ul p');
-
-            if (orderList.children.length > 0) {
-                noItemMessage.style.display = 'none';
-            } else {
-                noItemMessage.style.display = 'block';
-            }
-        }
-
-        // Function to add item to order
-        function addItemToOrder(menu_name, mcat_name, itemPrice) {
-            const quantityInput = event.target.closest('tr').querySelector('.item-quantity');
-            const quantity = quantityInput.value;
-
-            if (quantity > 0) {
-                updateOrderList(menu_name, itemPrice, mcat_name, quantity);
-                quantityInput.value = ''; // Clear the quantity input
-            }
-        }
-
-        // Function to remove an item
-        function removeItem(button) {
-            const item = button.closest('li');
-            const quantityInput = item.querySelector('#mtrxo_order_quantity');
-            const priceInput = item.querySelector('#mtrxo_order_price');
-            const totalInput = item.querySelector('#mtrxo_total_amount');
-
-            if (quantityInput && priceInput && totalInput) {
-                // Set values to 0 before removing the item
-                quantityInput.value = 0;
-                priceInput.value = 0;
-                totalInput.value = 0;
-
-                // Trigger the input event to update totals
-                quantityInput.dispatchEvent(new Event('input'));
-            }
-
-            item.remove(); // Remove the item from the DOM
-            updateTotals(); // Update the grand total
-            toggleNoItemMessage(); // Update the visibility of the no-item message
-        }
-
-        // Attach event listeners to inputs
-        const inputs = [
-            document.getElementById('mtrx_cash'),
-            document.getElementById('mtrx_discount_whole'),
-            document.getElementById('mtrx_discount_percent')
-        ];
-
-        inputs.forEach(input => {
-            input.addEventListener('input', updateTotals);
         });
+    }
 
-        // Ensure total is updated when the page loads
-        updateTotals();
+    // Function to update total for an item
+    function updateTotalForItem(event) {
+        const quantityInput = event.target;
+        const item = quantityInput.closest('li');
+        const priceInput = item.querySelector('#mtrxo_order_price');
+        const totalInput = item.querySelector('#mtrxo_total_amount');
 
-        // Make functions globally accessible
-        window.addItemToOrder = addItemToOrder;
-        window.removeItem = removeItem;
+        if (priceInput && totalInput) {
+            totalInput.value = quantityInput.value * priceInput.value;
+            updateHiddenFields(item.querySelector('.info-box-text').textContent.split(' - ')[0], item.querySelector('#mtrxo_order_price').value, item.querySelector('.info-box-text').textContent.split(' - ')[1], quantityInput.value, totalInput.value);
+            updateTotals(); // Update the grand total
+        } else {
+            console.error('Price or Total input not found.');
+        }
+    }
+
+    // Function to update totals
+    function updateTotals() {
+        const totalQuantity = Array.from(document.querySelectorAll('#mtrxo_order_quantity')).reduce((sum, input) => sum + parseInt(input.value) || 0, 0);
+        const grandTotal = Array.from(document.querySelectorAll('#mtrxo_total_amount')).reduce((sum, input) => sum + parseInt(input.value) || 0, 0);
+
+        document.querySelector('#mtrx_total_orders').value = totalQuantity;
+        document.querySelector('#mtrx_total').value = grandTotal;
+
+        // Update totals and change based on inputs
+        const totalInput = document.getElementById('mtrx_total');
+        const cashInput = document.getElementById('mtrx_cash');
+        const changeInput = document.getElementById('mtrx_change');
+        const discountWholeInput = document.getElementById('mtrx_discount_whole');
+        const discountPercentInput = document.getElementById('mtrx_discount_percent');
+        const totalOrdersInput = document.getElementById('mtrx_total_orders');
+        const confirmButton = document.getElementById('confirmButton');
+
+        // Get the total value and calculate discounts
+        let total = parseFloat(totalInput.value) || 0;
+        let discountWhole = parseFloat(discountWholeInput.value) || 0;
+        let discountPercent = parseFloat(discountPercentInput.value) || 0;
+
+        // Apply whole discount
+        if (discountWhole > 0) {
+            total -= discountWhole;
+        }
+
+        // Apply percentage discount
+        if (discountPercent > 0) {
+            total -= (total * discountPercent / 100);
+        }
+
+        // Update total with discount
+        totalInput.value = total.toFixed(2);
+
+        // Update total orders input (if applicable)
+        totalOrdersInput.value = totalOrdersInput.value; // Update this with the actual total orders if needed
+
+        // Calculate change if cash is provided
+        const cash = parseFloat(cashInput.value) || 0;
+        let change = cash - total;
+
+        // Update change input
+        changeInput.value = change.toFixed(2);
+
+        // Enable/Disable Confirm button based on conditions
+        if (cash > 0 && change >= 0) {
+            confirmButton.classList.remove('disabled'); // Remove disabled class
+        } else {
+            confirmButton.classList.add('disabled'); // Add disabled class
+        }
+    }
+
+    // Function to toggle no-item message
+    function toggleNoItemMessage() {
+        const orderList = document.querySelector('.item-content ul');
+        const noItemMessage = document.querySelector('.item-content ul p');
+
+        if (orderList.children.length > 0) {
+            noItemMessage.style.display = 'none';
+        } else {
+            noItemMessage.style.display = 'block';
+        }
+    }
+
+    // Function to add item to order
+    function addItemToOrder(menu_name, mcat_name, itemPrice) {
+        const quantityInput = event.target.closest('tr').querySelector('.item-quantity');
+        const quantity = quantityInput.value;
+
+        if (quantity > 0) {
+            updateOrderList(menu_name, itemPrice, mcat_name, quantity);
+            quantityInput.value = ''; // Clear the quantity input
+        }
+    }
+
+    // Function to remove an item
+    function removeItem(button) {
+        const item = button.closest('li');
+        const quantityInput = item.querySelector('#mtrxo_order_quantity');
+        const priceInput = item.querySelector('#mtrxo_order_price');
+        const totalInput = item.querySelector('#mtrxo_total_amount');
+
+        if (quantityInput && priceInput && totalInput) {
+            // Set values to 0 before removing the item
+            quantityInput.value = 0;
+            priceInput.value = 0;
+            totalInput.value = 0;
+
+            // Trigger the input event to update totals
+            quantityInput.dispatchEvent(new Event('input'));
+        }
+
+        item.remove(); // Remove the item from the DOM
+        updateTotals(); // Update the grand total
+        toggleNoItemMessage(); // Update the visibility of the no-item message
+    }
+
+    // Attach event listeners to inputs
+    const inputs = [
+        document.getElementById('mtrx_cash'),
+        document.getElementById('mtrx_discount_whole'),
+        document.getElementById('mtrx_discount_percent')
+    ];
+
+    inputs.forEach(input => {
+        input.addEventListener('input', updateTotals);
     });
+
+    // Ensure total is updated when the page loads
+    updateTotals();
+
+    // Make functions globally accessible
+    window.addItemToOrder = addItemToOrder;
+    window.removeItem = removeItem;
+});
 </script>
 
 <script>
