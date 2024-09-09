@@ -163,7 +163,7 @@ Route::post('admin/utility/suppliers/add', [UtilityController::class, 'add_suppl
 // @ POS CONTROLS
 // ? RECEIVE
 Route::get('pos/receive/new-transaction', [POSController::class, 'pos_receive_main']);
-Route::post('/pos-confirm', [POSController::class, 'pos_confirm']);
+Route::post('pos-confirm', [POSController::class, 'confirm']);
 Route::post('pos/receive/new-transaction/add', [POSController::class, 'pos_receive_add']);
 
 // ? PURCHASE

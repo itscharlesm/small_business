@@ -50,6 +50,27 @@
 
 {{-- Main Content --}}
 <div class="content">
+    @if (session('success'))
+        <div class="alert alert-success alert-dismissible" id="success-alert">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+            <h5><i class="icon fa fa-check"></i> Alert!</h5>
+            {{ session('success') }}
+        </div>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                setTimeout(function () {
+                    var alert = document.getElementById('success-alert');
+                    if (alert) {
+                        alert.style.transition = 'opacity 0.5s ease';
+                        alert.style.opacity = '0';
+                        setTimeout(function () {
+                            alert.remove();
+                        }, 500); // Wait for the transition to complete before removing
+                    }
+                }, 1000); // 1 second delay before starting the fade-out
+            });
+        </script>
+    @endif
     <div class="row">
         <div class="col-md-8">
             <div class="container-fluid">
@@ -138,8 +159,8 @@
             </div>
         </div>
         <div class="col-md-4">
-            <form action="{{ action('App\Http\Controllers\POSController@pos_confirm') }}" method="POST">
-                {{ csrf_field() }}
+            <form action="{{ action('App\Http\Controllers\POSController@confirm') }}" method="POST">
+                @csrf
                 <div class="card my-0 py-0" style="min-height: 555px; max-height: 560px">
                     <div class="card-body item-content pt-1">
                         <hr>
@@ -302,11 +323,11 @@
 
             const hiddenFieldsHTML = `
                 <div class="hidden-fields-item" data-id="${uniqueId}">
-                    <input type="text" name="menu_name[]" value="${menu_name}">
-                    <input type="text" name="mcat_name[]" value="${mcat_name}">
-                    <input type="text" name="mtrxo_order_price[]" value="${itemPrice}">
-                    <input type="text" name="mtrxo_order_quantity[]" value="${quantity}">
-                    <input type="text" name="mtrxo_total_amount[]" value="${total}">
+                    <input type="hidden" name="menu_name[]" value="${menu_name}">
+                    <input type="hidden" name="mcat_name[]" value="${mcat_name}">
+                    <input type="hidden" name="mtrxo_order_price[]" value="${itemPrice}">
+                    <input type="hidden" name="mtrxo_order_quantity[]" value="${quantity}">
+                    <input type="hidden" name="mtrxo_total_amount[]" value="${total}">
                 </div>
             `;
 

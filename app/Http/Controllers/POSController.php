@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use DB;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 
 
 class POSController extends Controller
@@ -26,46 +27,40 @@ class POSController extends Controller
         return view('pos.pos_receive', compact('categories', 'menus'));
     }
 
-    public function pos_confirm(Request $request)
-{
-    // Validate request data
-    $validated = $request->validate([
-        'mtrx_cash' => 'required|numeric|min:0',
-        'mtrx_discount_whole' => 'nullable|numeric|min:0',
-        'mtrx_discount_percent' => 'nullable|numeric|min:0|max:100',
-        'mtrx_total' => 'required|numeric|min:0',
-        'mtrx_total_orders' => 'required|numeric|min:0',
-        'orders' => 'required|array|min:1',  // Assuming 'orders' is the array of items
-        'orders.*.menu_name' => 'required|string',
-        'orders.*.mcat_name' => 'required|string',
-        'orders.*.mtrxo_order_quantity' => 'required|numeric|min:1',
-        'orders.*.mtrx_order_price' => 'required|numeric|min:0',
-    ]);
+    public function confirm(Request $request)
+    {
+        // Begin transaction
+        DB::beginTransaction();
 
-    // Begin transaction
-    DB::beginTransaction();
-
-    try {
         // Insert into menu_transactions
-        $menuTransaction = DB::table('menu_transactions')->insertGetId([
-            'mtrx_total_orders' => $validated['mtrx_total_orders'],
-            'mtrx_total' => $validated['mtrx_total'],
-            'mtrx_cash' => $validated['mtrx_cash'],
-            'mtrx_change' => $validated['mtrx_cash'] - $validated['mtrx_total'], // Assuming this calculation
-            'mtrx_discount_whole' => $validated['mtrx_discount_whole'] ?? null,
-            'mtrx_discount_percent' => $validated['mtrx_discount_percent'] ?? null,
+        $menuTransactionId = DB::table('menu_transactions')->insertGetId([
+            'mtrx_total_orders' => $request->input('mtrx_total_orders'),
+            'mtrx_total' => $request->input('mtrx_total'),
+            'mtrx_cash' => $request->input('mtrx_cash'),
+            'mtrx_change' => $request->input('mtrx_change'),
+            'mtrx_discount_whole' => $request->input('mtrx_discount_whole', null),
+            'mtrx_discount_percent' => $request->input('mtrx_discount_percent', null),
             'mtrx_date_created' => Carbon::now(),
             'mtrx_created_by' => session('usr_id'),
             'mtrx_active' => 1
         ]);
 
-        // Insert each order into menu_transaction_orders
-        foreach ($validated['orders'] as $order) {
+        // Get order arrays from request
+        $menuNames = $request->input('menu_name', []);
+        $mcatNames = $request->input('mcat_name', []);
+        $orderPrices = $request->input('mtrxo_order_price', []);
+        $orderQuantities = $request->input('mtrxo_order_quantity', []);
+        $totalAmounts = $request->input('mtrxo_total_amount', []);
+
+        // Iterate through the orders
+        foreach ($menuNames as $index => $menuName) {
             DB::table('menu_transaction_orders')->insert([
-                'mtrx_id' => $menuTransaction,
-                'menu_name' => $order['menu_name'],
-                'mcat_name' => $order['mcat_name'],
-                'mtrxo_order_quantity' => $order['mtrxo_order_quantity'],
+                'mtrx_id' => $menuTransactionId,
+                'menu_name' => $menuName,
+                'mcat_name' => $mcatNames[$index] ?? null,
+                'mtrxo_order_quantity' => $orderQuantities[$index] ?? 0,
+                'mtrxo_order_price' => $orderPrices[$index] ?? 0,
+                'mtrxo_total_amount' => $totalAmounts[$index] ?? 0,
                 'mtrxo_date_created' => Carbon::now(),
                 'mtrxo_created_by' => session('usr_id'),
                 'mtrxo_active' => 1
@@ -76,13 +71,8 @@ class POSController extends Controller
         DB::commit();
 
         // Redirect or return success response
-        return redirect()->route('pos.index')->with('success', 'Transaction completed successfully.');
-    } catch (\Exception $e) {
-        // Rollback the transaction on error
-        DB::rollBack();
-        return redirect()->back()->withErrors('Transaction failed: ' . $e->getMessage());
+        return redirect('pos/receive/new-transaction')->with('success', 'Transaction completed successfully.');
     }
-}
 
     // @ OHAHA PURCHASES
 
