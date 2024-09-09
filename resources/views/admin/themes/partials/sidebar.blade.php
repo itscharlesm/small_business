@@ -14,8 +14,7 @@
                 <img src="{{ asset(getAvatar(session('usr_id'))) }}" class="img-circle elevation-2" alt="User Image">
             </div>
             <div class="info">
-                <a href="javascipt:void(0)" data-toggle="modal" data-target="#userInfoModal"
-                    class="d-block">{{ session('usr_first_name') }}</a>
+                <a href="javascipt:void(0)" class="d-block">{{ session('usr_first_name') }}</a>
                 <span class="brand-text font-weight-light"
                     style="color:gray;"><small>{{ session('acc_name') }}</small></span>
             </div>
@@ -25,7 +24,7 @@
         <nav class="mt-2">
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
 
-                {{-- ? Home --}}
+                {{-- Home --}}
                 <li class="nav-item">
                     <a href="{{ action('App\Http\Controllers\AdminController@home') }}"
                         class="nav-link {{ request()->is('admin/home') ? 'active' : '' }}">
@@ -34,12 +33,12 @@
                     </a>
                 </li>
 
-                {{-- @ POS --}}
+                {{-- Point of Sale --}}
                 <li class="nav-item {{ request()->is('pos/*') ? 'menu-open' : '' }}">
                     <a href="#" class="nav-link {{ request()->is('pos/*') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-cart-plus"></i>
                         <p>
-                            Point of Sale
+                            Transactions
                             <i class="right fas fa-angle-left"></i>
                         </p>
                     </a>
@@ -48,7 +47,7 @@
                             <a href="{{ action('App\Http\Controllers\POSController@pos_receive_main') }}"
                                 class="nav-link {{ request()->is('pos/receive/*') ? 'active' : '' }}">
                                 <i class="far fa-circle nav-icon"></i>
-                                <p>Orders</p>
+                                <p>Point of Sale</p>
                             </a>
                         </li>
                         <li class="nav-item">
@@ -61,12 +60,12 @@
                     </ul>
                 </li>
 
-                {{-- ? Management --}}
+                {{-- Management --}}
                 <li class="nav-header">Management</li>
 
                 <li class="nav-item {{ request()->is('admin/utility*') ? 'menu-open' : '' }}">
                     <a href="#" class="nav-link {{ request()->is('admin/utility*') ? 'active' : '' }}">
-                        <i class="nav-icon fas fa-cog"></i>
+                        <i class="nav-icon fas fa-list"></i>
                         <p>
                             Utility
                             <i class="right fas fa-angle-left"></i>
@@ -77,28 +76,58 @@
                             <a href="{{ action('App\Http\Controllers\UtilityController@product_details') }}"
                                 class="nav-link {{ request()->is('admin/utility/products') ? 'active' : '' }}">
                                 <i class="far fa-circle nav-icon"></i>
-                                <p>Manage Product Details</p>
+                                <p>Manage Categories</p>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a href="{{ action('App\Http\Controllers\UtilityController@product_categories') }}"
                                 class="nav-link {{ request()->is('admin/utility/categories') ? 'active' : '' }}">
                                 <i class="far fa-circle nav-icon"></i>
-                                <p>Product Categories</p>
+                                <p>Manage Menu</p>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a href="{{ action('App\Http\Controllers\UtilityController@clients_manage') }}"
                                 class="nav-link {{ request()->is('admin/utility/clients') ? 'active' : '' }}">
                                 <i class="far fa-circle nav-icon"></i>
-                                <p>Manage Clients</p>
+                                <p>Manage Inventory</p>
                             </a>
                         </li>
+                    </ul>
+                </li>
+
+                <li class="nav-item {{ request()->is('admin/setup*') ? 'menu-open' : '' }}">
+                    <a href="#" class="nav-link {{ request()->is('admin/setup*') ? 'active' : '' }}">
+                        <i class="nav-icon fas fa-users"></i>
+                        <p>
+                            Employee
+                            <i class="right fas fa-angle-left"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href="{{ action('App\Http\Controllers\UtilityController@suppliers_manage') }}"
-                                class="nav-link {{ request()->is('admin/utility/suppliers') ? 'active' : '' }}">
+                            <a href="{{ action('App\Http\Controllers\AdminController@setup') }}"
+                                class="nav-link {{ request()->is('admin/setup') ? 'active' : '' }}">
                                 <i class="far fa-circle nav-icon"></i>
-                                <p>Manage Suppliers</p>
+                                <p>Employees</p>
+                            </a>
+                        </li>
+                    </ul>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{{ action('App\Http\Controllers\AdminController@setup') }}"
+                                class="nav-link {{ request()->is('admin/setup') ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Attendance</p>
+                            </a>
+                        </li>
+                    </ul>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{{ action('App\Http\Controllers\AdminController@setup') }}"
+                                class="nav-link {{ request()->is('admin/setup') ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Payroll</p>
                             </a>
                         </li>
                     </ul>
@@ -117,14 +146,16 @@
                             <a href="{{ action('App\Http\Controllers\AdminController@setup') }}"
                                 class="nav-link {{ request()->is('admin/setup') ? 'active' : '' }}">
                                 <i class="far fa-circle nav-icon"></i>
-                                <p>Setup Account</p>
+                                <p>Account Information</p>
                             </a>
                         </li>
+                    </ul>
+                    <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href=""
-                                class="nav-link {{ request()->is('management/inactive/project') ? 'active' : '' }}">
+                            <a href="{{ action('App\Http\Controllers\AdminController@setup') }}"
+                                class="nav-link {{ request()->is('admin/setup') ? 'active' : '' }}">
                                 <i class="far fa-circle nav-icon"></i>
-                                <p>Account Status</p>
+                                <p>Account Settings</p>
                             </a>
                         </li>
                     </ul>
