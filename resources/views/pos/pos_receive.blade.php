@@ -149,6 +149,13 @@
                             <p class="text-center">No item Selected</p>
                         </ul>
                     </div>
+                    <div class="col-md-5">
+                        <input type="hidden" id="mtrxo_order_price" name="mtrxo_order_price[]" value="">
+                        <input type="hidden" id="menu_name" name="menu_name[]" value="">
+                        <input type="hidden" id="mcat_name" name="mcat_name[]" value="">
+                        <input type="hidden" id="" name="mtrxo_order_quantity[]" value="">
+                        <input type="hidden" id="" name="mtrxo_total_amount[]" value="">
+                    </div>
                     <div class="card-footer">
                         <div class="row">
                             <div class="col-md-3">
@@ -199,7 +206,8 @@
                                 <label for="">orders</label>
                             </div>
                             <div class="col-md-12 mt-2">
-                                <button class="btn btn-sm btn-success" id="confirmButton" style="width: 100%" type="submit">Confirm</button>
+                                <button class="btn btn-sm btn-success" id="confirmButton" style="width: 100%"
+                                    type="submit">Confirm</button>
                             </div>
                         </div>
                     </div>
@@ -228,8 +236,8 @@
 
             if (item) {
                 const quantityInput = item.querySelector('#mtrxo_order_quantity');
-                const priceInput = item.querySelector('#mtrx_order_price');
-                const totalInput = item.querySelector('#mtrx_total_amount');
+                const priceInput = item.querySelector('#mtrxo_order_price');
+                const totalInput = item.querySelector('#mtrxo_total_amount');
 
                 if (quantityInput && priceInput && totalInput) {
                     quantityInput.value = parseInt(quantityInput.value) + parseInt(quantity);
@@ -249,10 +257,10 @@
                             <span class="info-box-text">${menu_name} - ${mcat_name}</span>
                             <div class="row">
                                 <div class="col-md-2">
-                                    <label for="mtrx_order_price">Price:</label>
+                                    <label for="mtrxo_order_price">Price:</label>
                                 </div>
                                 <div class="col-md-5">
-                                    <input type="number" class="form-control form-control-border form-control-sm" id="mtrx_order_price" value="${itemPrice}" readonly required>
+                                    <input type="number" class="form-control form-control-border form-control-sm" id="mtrxo_order_price" value="${itemPrice}" readonly required>
                                 </div>
                                 <div class="col-md-3">
                                     <input type="number" class="form-control form-control-border form-control-sm" id="mtrxo_order_quantity" value="${quantity}" data-price="${itemPrice}" required>
@@ -261,10 +269,10 @@
                                     <label for="mtrxo_order_quantity">orders</label>
                                 </div>
                                 <div class="col-md-2">
-                                    <label for="mtrx_total_amount">Total:</label>
+                                    <label for="mtrxo_total_amount">Total:</label>
                                 </div>
                                 <div class="col-md-5">
-                                    <input type="number" class="form-control form-control-border form-control-sm" id="mtrx_total_amount" value="${quantity * itemPrice}" readonly required>
+                                    <input type="number" class="form-control form-control-border form-control-sm" id="mtrxo_total_amount" value="${quantity * itemPrice}" readonly required>
                                 </div>
                                 <div class="col-md-5">
                                     <input type="hidden" id="prd_id" value="" readonly>
@@ -289,8 +297,8 @@
         function updateTotalForItem(event) {
             const quantityInput = event.target;
             const item = quantityInput.closest('li');
-            const priceInput = item.querySelector('#mtrx_order_price');
-            const totalInput = item.querySelector('#mtrx_total_amount');
+            const priceInput = item.querySelector('#mtrxo_order_price');
+            const totalInput = item.querySelector('#mtrxo_total_amount');
 
             if (priceInput && totalInput) {
                 totalInput.value = quantityInput.value * priceInput.value;
@@ -303,7 +311,7 @@
         // Function to update totals
         function updateTotals() {
             const totalQuantity = Array.from(document.querySelectorAll('#mtrxo_order_quantity')).reduce((sum, input) => sum + parseInt(input.value) || 0, 0);
-            const grandTotal = Array.from(document.querySelectorAll('#mtrx_total_amount')).reduce((sum, input) => sum + parseInt(input.value) || 0, 0);
+            const grandTotal = Array.from(document.querySelectorAll('#mtrxo_total_amount')).reduce((sum, input) => sum + parseInt(input.value) || 0, 0);
 
             document.querySelector('#mtrx_total_orders').value = totalQuantity;
             document.querySelector('#mtrx_total').value = grandTotal;
@@ -380,8 +388,8 @@
         function removeItem(button) {
             const item = button.closest('li');
             const quantityInput = item.querySelector('#mtrxo_order_quantity');
-            const priceInput = item.querySelector('#mtrx_order_price');
-            const totalInput = item.querySelector('#mtrx_total_amount');
+            const priceInput = item.querySelector('#mtrxo_order_price');
+            const totalInput = item.querySelector('#mtrxo_total_amount');
 
             if (quantityInput && priceInput && totalInput) {
                 // Set values to 0 before removing the item
