@@ -149,12 +149,8 @@
                             <p class="text-center">No item Selected</p>
                         </ul>
                     </div>
-                    <div class="col-md-5">
-                        <input type="hidden" id="mtrxo_order_price" name="mtrxo_order_price[]" value="">
-                        <input type="hidden" id="menu_name" name="menu_name[]" value="">
-                        <input type="hidden" id="mcat_name" name="mcat_name[]" value="">
-                        <input type="hidden" id="" name="mtrxo_order_quantity[]" value="">
-                        <input type="hidden" id="" name="mtrxo_total_amount[]" value="">
+                    <div class="col-md-5 hidden-fields-container">
+                        <!-- Hidden fields will be appended here -->
                     </div>
                     <div class="card-footer">
                         <div class="row">
@@ -223,6 +219,7 @@
         function updateOrderList(menu_name, itemPrice, mcat_name, quantity) {
             const orderList = document.querySelector('.item-content ul');
             const noItemMessage = document.querySelector('.item-content ul p');
+            const hiddenFieldsContainer = document.querySelector('.hidden-fields-container');
 
             if (!orderList) {
                 console.error('Order list element not found.');
@@ -243,6 +240,9 @@
                     quantityInput.value = parseInt(quantityInput.value) + parseInt(quantity);
                     totalInput.value = quantityInput.value * priceInput.value;
                     quantityInput.dispatchEvent(new Event('input')); // Trigger the input event to recalculate totals
+
+                    // Update hidden fields
+                    updateHiddenFields(menu_name, itemPrice, mcat_name, quantityInput.value, totalInput.value);
                 } else {
                     console.error('Quantity, Price, or Total input not found.');
                 }
@@ -252,45 +252,77 @@
                 newItem.style.listStyle = 'none';
 
                 newItem.innerHTML = `
-                    <div class="info-box">
-                        <div class="info-box-content">
-                            <span class="info-box-text">${menu_name} - ${mcat_name}</span>
-                            <div class="row">
-                                <div class="col-md-2">
-                                    <label for="mtrxo_order_price">Price:</label>
-                                </div>
-                                <div class="col-md-5">
-                                    <input type="number" class="form-control form-control-border form-control-sm" id="mtrxo_order_price" value="${itemPrice}" readonly required>
-                                </div>
-                                <div class="col-md-3">
-                                    <input type="number" class="form-control form-control-border form-control-sm" id="mtrxo_order_quantity" value="${quantity}" data-price="${itemPrice}" required>
-                                </div>
-                                <div class="col-md-2">
-                                    <label for="mtrxo_order_quantity">orders</label>
-                                </div>
-                                <div class="col-md-2">
-                                    <label for="mtrxo_total_amount">Total:</label>
-                                </div>
-                                <div class="col-md-5">
-                                    <input type="number" class="form-control form-control-border form-control-sm" id="mtrxo_total_amount" value="${quantity * itemPrice}" readonly required>
-                                </div>
-                                <div class="col-md-5">
-                                    <input type="hidden" id="prd_id" value="" readonly>
-                                    <button class="btn btn-sm btn-danger mb-0 pb-0 mt-1" style="width: 100%" type="button" onclick="removeItem(this)"><i class="fa fa-trash" aria-hidden="true"></i></button>
-                                </div>
-                            </div>
+            <div class="info-box">
+                <div class="info-box-content">
+                    <span class="info-box-text">${menu_name} - ${mcat_name}</span>
+                    <div class="row">
+                        <div class="col-md-2">
+                            <label for="mtrxo_order_price">Price:</label>
+                        </div>
+                        <div class="col-md-5">
+                            <input type="number" class="form-control form-control-border form-control-sm" id="mtrxo_order_price" value="${itemPrice}" readonly required>
+                        </div>
+                        <div class="col-md-3">
+                            <input type="number" class="form-control form-control-border form-control-sm" id="mtrxo_order_quantity" value="${quantity}" data-price="${itemPrice}" required>
+                        </div>
+                        <div class="col-md-2">
+                            <label for="mtrxo_order_quantity">orders</label>
+                        </div>
+                        <div class="col-md-2">
+                            <label for="mtrxo_total_amount">Total:</label>
+                        </div>
+                        <div class="col-md-5">
+                            <input type="number" class="form-control form-control-border form-control-sm" id="mtrxo_total_amount" value="${quantity * itemPrice}" readonly required>
+                        </div>
+                        <div class="col-md-5">
+                            <input type="hidden" id="prd_id" value="" readonly>
+                            <button class="btn btn-sm btn-danger mb-0 pb-0 mt-1" style="width: 100%" type="button" onclick="removeItem(this)"><i class="fa fa-trash" aria-hidden="true"></i></button>
                         </div>
                     </div>
-                `;
+                </div>
+            </div>
+        `;
 
                 orderList.appendChild(newItem);
 
                 // Add event listener to the new quantity input
                 newItem.querySelector('#mtrxo_order_quantity').addEventListener('input', updateTotalForItem);
+
+                // Add hidden fields for the new item
+                addHiddenFields(menu_name, itemPrice, mcat_name, quantity, quantity * itemPrice);
             }
 
             updateTotals();
             toggleNoItemMessage();
+        }
+
+        function addHiddenFields(menu_name, itemPrice, mcat_name, quantity, total) {
+            const hiddenFieldsContainer = document.querySelector('.hidden-fields-container');
+
+            const hiddenFieldsHTML = `
+        <input type="hidden" name="menu_name[]" value="${menu_name}">
+        <input type="hidden" name="mcat_name[]" value="${mcat_name}">
+        <input type="hidden" name="mtrxo_order_price[]" value="${itemPrice}">
+        <input type="hidden" name="mtrxo_order_quantity[]" value="${quantity}">
+        <input type="hidden" name="mtrxo_total_amount[]" value="${total}">
+    `;
+
+            hiddenFieldsContainer.insertAdjacentHTML('beforeend', hiddenFieldsHTML);
+        }
+
+        function updateHiddenFields(menu_name, itemPrice, mcat_name, quantity, total) {
+            const hiddenFieldsContainer = document.querySelector('.hidden-fields-container');
+
+            const inputs = hiddenFieldsContainer.querySelectorAll(`input[name="menu_name[]"][value="${menu_name}"]`);
+            inputs.forEach(input => {
+                const quantityInput = input.parentElement.querySelector('input[name="mtrxo_order_quantity[]"]');
+                const totalInput = input.parentElement.querySelector('input[name="mtrxo_total_amount[]"]');
+
+                if (quantityInput && totalInput) {
+                    quantityInput.value = quantity;
+                    totalInput.value = total;
+                }
+            });
         }
 
         // Function to update total for an item
