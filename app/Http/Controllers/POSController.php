@@ -73,4 +73,9 @@ class POSController extends Controller
         // Redirect or return success response
         return redirect('pos/receive/new-transaction')->with('success', 'Transaction completed successfully.');
     }
+
+    public function transaction_history()
+    {
+        return view('admin.pos.transaction_history');
+    }
 }

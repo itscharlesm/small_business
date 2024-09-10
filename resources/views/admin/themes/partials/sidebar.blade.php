@@ -45,14 +45,14 @@
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
                             <a href="{{ action('App\Http\Controllers\POSController@pos_receive_main') }}"
-                                class="nav-link {{ request()->is('pos/receive/*') ? 'active' : '' }}">
+                                class="nav-link {{ request()->is('pos/receive/new-transaction') ? 'active' : '' }}">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Point of Sale</p>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="{{ action('App\Http\Controllers\POSController@pos_purchase_main') }}"
-                                class="nav-link {{ request()->is('pos/purchase/*') ? 'active' : '' }}">
+                            <a href="{{ action('App\Http\Controllers\POSController@transaction_history') }}"
+                                class="nav-link {{ request()->is('pos/receive/transactions') ? 'active' : '' }}">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Transaction History</p>
                             </a>

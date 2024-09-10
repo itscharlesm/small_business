@@ -68,6 +68,7 @@ Route::get('admin/setup', [AdminController::class, 'setup']);
 // Point of Sale
 Route::get('pos/receive/new-transaction', [POSController::class, 'pos_receive_main']);
 Route::post('pos/receive/new-transaction/payment', [POSController::class, 'payment']);
+Route::get('pos/receive/transactions', [POSController::class, 'transaction_history']);
 
 
 
