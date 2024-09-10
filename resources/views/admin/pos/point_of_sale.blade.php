@@ -40,8 +40,8 @@
                 <ol class="breadcrumb float-sm-right">
                     <li class="breadcrumb-item"><a
                             href="{{ action('App\Http\Controllers\AdminController@home') }}">Home</a></li>
-                    <li class="breadcrumb-item">POS</li>
-                    <li class="breadcrumb-item">Orders</li>
+                    <li class="breadcrumb-item">Transactions</li>
+                    <li class="breadcrumb-item">Point of Sale</li>
                 </ol>
             </div>
         </div>
@@ -65,9 +65,9 @@
                         alert.style.opacity = '0';
                         setTimeout(function () {
                             alert.remove();
-                        }, 500); // Wait for the transition to complete before removing
+                        }, 500);
                     }
-                }, 1000); // 1 second delay before starting the fade-out
+                }, 1000);
             });
         </script>
     @endif

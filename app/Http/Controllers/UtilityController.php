@@ -11,6 +11,27 @@ class UtilityController extends Controller
 {
     public function category_main()
     {
-        return view('admin.utility.product_categories');
+        $categories = DB::table('menu_categories')
+            ->where('mcat_active', '=', 1)
+            ->get();
+
+        return view('admin.utility.product_categories', compact('categories'));
+    }
+
+    public function category_create(Request $request)
+    {
+        // Validate the request data
+        $request->validate([
+            'mcat_name' => 'required|string|max:255',
+        ]);
+
+        // Insert the new category into the menu_categories table
+        DB::table('menu_categories')->insert([
+            'mcat_name' => $request->input('mcat_name'),
+            'mcat_date_created' => Carbon::now(),
+            'mcat_created_by' => session('usr_id')
+        ]);
+
+        return redirect('admin/utility/manage-categories')->with('success', 'Category added successfully.');
     }
 }
