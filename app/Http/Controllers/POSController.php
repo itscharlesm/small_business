@@ -71,11 +71,21 @@ class POSController extends Controller
         DB::commit();
 
         // Redirect or return success response
-        return redirect('pos/receive/new-transaction')->with('success', 'Transaction completed successfully.');
+        return redirect('admin/pos/new-transaction')->with('success', 'Transaction completed successfully.');
     }
 
     public function transaction_history()
     {
-        return view('admin.pos.transaction_history');
+        // Fetch transactions ordered by date created (oldest first)
+        $transactions = DB::table('menu_transactions')
+            ->orderBy('mtrx_date_created', 'desc')
+            ->get()
+            ->map(function ($transaction) {
+                $transaction->formatted_date = Carbon::parse($transaction->mtrx_date_created)->format('g:i A | F d Y');
+                return $transaction;
+            });
+
+        // Pass the transactions to the view
+        return view('admin.pos.transaction_history', compact('transactions'));
     }
 }

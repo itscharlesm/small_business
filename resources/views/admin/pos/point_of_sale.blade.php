@@ -80,8 +80,8 @@
                             <div class="info-box bg-gradient-success hover-box">
                                 <span class="info-box-icon"><i class="fa fa-peso-sign"></i></span>
                                 <div class="info-box-content">
-                                    <span class="info-box-text">Transactions Today</span>
-                                    <span class="info-box-number">{{ getTransactionNumberToday() }}</span>
+                                    <span class="info-box-text">Earnings Today</span>
+                                    <span class="info-box-number">{{ getTotalTransactionAmountToday() }}</span>
                                 </div>
                             </div>
                         </div>

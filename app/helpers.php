@@ -18,24 +18,15 @@ function getTransactionNumber()
     return $mtrx_number;
 }
 
-function getTransactionNumberToday()
+function getTotalTransactionAmountToday()
 {
     $today = Carbon::today()->toDateString();
 
-    $latest_mtrx_number = DB::table('menu_transactions')
-        ->select('mtrx_id')
+    $totalTransactionAmount = DB::table('menu_transactions')
         ->whereDate('mtrx_date_created', $today)
-        ->orderBy('mtrx_id', 'desc')
-        ->first();
+        ->sum('mtrx_total');
 
-    if (!$latest_mtrx_number) {
-        $mtrx_number = '000001';
-    } else {
-        $lastNumber = intval($latest_mtrx_number->mtrx_id);
-        $mtrx_number = str_pad($lastNumber + 1, 6, '0', STR_PAD_LEFT);
-    }
-
-    return $mtrx_number;
+    return $totalTransactionAmount;
 }
 
 // function hasUploadedPhotos($inno_id)
