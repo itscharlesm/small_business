@@ -76,16 +76,22 @@ class POSController extends Controller
 
     public function transaction_history()
     {
-        // Fetch transactions ordered by date created (oldest first)
+        // Fetch transactions with their related orders
         $transactions = DB::table('menu_transactions')
             ->orderBy('mtrx_date_created', 'desc')
             ->get()
             ->map(function ($transaction) {
                 $transaction->formatted_date = Carbon::parse($transaction->mtrx_date_created)->format('g:i A | F d Y');
+
+                // Fetch related menu_transaction_orders for each transaction
+                $transaction->orders = DB::table('menu_transaction_orders')
+                    ->where('mtrx_id', $transaction->mtrx_id)
+                    ->get();
+
                 return $transaction;
             });
 
-        // Pass the transactions to the view
+        // Pass the transactions with their orders to the view
         return view('admin.pos.transaction_history', compact('transactions'));
     }
 }
