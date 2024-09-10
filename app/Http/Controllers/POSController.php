@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Log;
 
 class POSController extends Controller
 {
-    public function pos_receive_main()
+    public function pos_main()
     {
         $categories = DB::table('menu_categories')
             ->where('mcat_active', '=', 1)

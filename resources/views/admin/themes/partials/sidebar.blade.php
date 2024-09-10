@@ -34,8 +34,8 @@
                 </li>
 
                 {{-- Point of Sale --}}
-                <li class="nav-item {{ request()->is('pos/*') ? 'menu-open' : '' }}">
-                    <a href="#" class="nav-link {{ request()->is('pos/*') ? 'active' : '' }}">
+                <li class="nav-item {{ request()->is('admin/pos/*') ? 'menu-open' : '' }}">
+                    <a href="#" class="nav-link {{ request()->is('admin/pos/*') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-cart-plus"></i>
                         <p>
                             Transactions
@@ -44,15 +44,15 @@
                     </a>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href="{{ action('App\Http\Controllers\POSController@pos_receive_main') }}"
-                                class="nav-link {{ request()->is('pos/receive/new-transaction') ? 'active' : '' }}">
+                            <a href="{{ action('App\Http\Controllers\POSController@pos_main') }}"
+                                class="nav-link {{ request()->is('admin/pos/new-transaction') ? 'active' : '' }}">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Point of Sale</p>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a href="{{ action('App\Http\Controllers\POSController@transaction_history') }}"
-                                class="nav-link {{ request()->is('pos/receive/transactions') ? 'active' : '' }}">
+                                class="nav-link {{ request()->is('admin/pos/transactions') ? 'active' : '' }}">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Transaction History</p>
                             </a>
@@ -73,22 +73,20 @@
                     </a>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href="{{ action('App\Http\Controllers\UtilityController@product_details') }}"
-                                class="nav-link {{ request()->is('admin/utility/products') ? 'active' : '' }}">
+                            <a href="{{ action('App\Http\Controllers\UtilityController@category_main') }}"
+                                class="nav-link {{ request()->is('admin/utility/manage-categories') ? 'active' : '' }}">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Manage Categories</p>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="{{ action('App\Http\Controllers\UtilityController@product_categories') }}"
-                                class="nav-link {{ request()->is('admin/utility/categories') ? 'active' : '' }}">
+                            <a href="" class="nav-link {{ request()->is('admin/utility/categories') ? 'active' : '' }}">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Manage Menu</p>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="{{ action('App\Http\Controllers\UtilityController@clients_manage') }}"
-                                class="nav-link {{ request()->is('admin/utility/clients') ? 'active' : '' }}">
+                            <a href="" class="nav-link {{ request()->is('admin/utility/clients') ? 'active' : '' }}">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Manage Inventory</p>
                             </a>

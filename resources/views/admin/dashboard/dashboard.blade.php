@@ -26,7 +26,7 @@
                     <div class="icon">
                         <i class="fas fa-truck"></i>
                     </div>
-                    <a href="{{ action('App\Http\Controllers\POSController@pos_receive_main') }}" class="small-box-footer">
+                    <a href="{{ action('App\Http\Controllers\POSController@pos_main') }}" class="small-box-footer">
                         Create New Delivery <i class="fas fa-arrow-circle-right"></i>
                     </a>
                 </div>
@@ -45,7 +45,8 @@
                     <div class="icon">
                         <i class="fas fa-shopping-cart"></i>
                     </div>
-                    <a href="{{ action('App\Http\Controllers\POSController@pos_purchase_main') }}" class="small-box-footer">
+                    <a href="{{ action('App\Http\Controllers\POSController@pos_purchase_main') }}"
+                        class="small-box-footer">
                         Create New Purchase <i class="fas fa-arrow-circle-right"></i>
                     </a>
                 </div>
@@ -64,7 +65,8 @@
                     <div class="icon">
                         <i class="fas fa-chain-broken"></i>
                     </div>
-                    <a href="{{ action('App\Http\Controllers\POSController@pos_damages_main') }}" class="small-box-footer">
+                    <a href="{{ action('App\Http\Controllers\POSController@pos_damages_main') }}"
+                        class="small-box-footer">
                         Record New Damages <i class="fas fa-arrow-circle-right"></i>
                     </a>
                 </div>
@@ -320,7 +322,7 @@
                         <span class="progress-description">
                             70% Increase in 30 Days
                         </span> --}}
-                        
+
                     </div>
                 </div>
             </div>
@@ -375,30 +377,30 @@
 </div>
 
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
+    document.addEventListener("DOMContentLoaded", function () {
         var randomTime1 = Math.floor(Math.random() * (1000 - 250 + 1)) + 100;
         var randomTime2 = Math.floor(Math.random() * (1000 - 250 + 1)) + 100;
         var randomTime3 = Math.floor(Math.random() * (1000 - 250 + 1)) + 100;
         var soaspin = Math.floor(Math.random() * (1000 - 250 + 1)) + 100;
         var inventoryspin = Math.floor(Math.random() * (1000 - 250 + 1)) + 100;
 
-        setTimeout(function() {
+        setTimeout(function () {
             document.getElementById('spinner1').style.display = 'none';
         }, randomTime1);
 
-        setTimeout(function() {
+        setTimeout(function () {
             document.getElementById('spinner2').style.display = 'none';
         }, randomTime2);
 
-        setTimeout(function() {
+        setTimeout(function () {
             document.getElementById('spinner3').style.display = 'none';
         }, randomTime3);
 
-        setTimeout(function() {
+        setTimeout(function () {
             document.getElementById('soaspin').style.display = 'none';
         }, soaspin);
 
-        setTimeout(function() {
+        setTimeout(function () {
             document.getElementById('inventoryspin').style.display = 'none';
         }, inventoryspin);
 
@@ -408,15 +410,15 @@
         var reports2 = Math.floor(Math.random() * (2000 - 1000 + 1)) + 1000;
         var reports3 = Math.floor(Math.random() * (2000 - 1000 + 1)) + 1000;
 
-        setTimeout(function() {
+        setTimeout(function () {
             document.getElementById('inv-summary').style.display = 'none';
         }, reports1);
 
-        setTimeout(function() {
+        setTimeout(function () {
             document.getElementById('volume').style.display = 'none';
         }, reports2);
 
-        setTimeout(function() {
+        setTimeout(function () {
             document.getElementById('payrolls').style.display = 'none';
         }, reports3);
     });

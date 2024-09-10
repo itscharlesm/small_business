@@ -65,25 +65,13 @@ Route::get('announcement/delete/{ann_uuid}', [AnnouncementController::class, 'de
 Route::get('admin/home', [AdminController::class, 'home']);
 Route::get('admin/setup', [AdminController::class, 'setup']);
 
-// Point of Sale
-Route::get('pos/receive/new-transaction', [POSController::class, 'pos_receive_main']);
-Route::post('pos/receive/new-transaction/payment', [POSController::class, 'payment']);
-Route::get('pos/receive/transactions', [POSController::class, 'transaction_history']);
+// Transactions
+Route::get('admin/pos/new-transaction', [POSController::class, 'pos_main']);
+Route::post('admin/pos/new-transaction/payment', [POSController::class, 'payment']);
+Route::get('admin/pos/transactions', [POSController::class, 'transaction_history']);
 
-
-
-
-Route::get('admin/utility/products', [UtilityController::class, 'product_details']);
-Route::post('admin/utility/products/add', [UtilityController::class, 'add_new_product']);
-
-Route::get('admin/utility/categories', [UtilityController::class, 'product_categories']);
-Route::post('admin/utility/categories/add', [UtilityController::class, 'add_product_category']);
-
-Route::get('admin/utility/clients', [UtilityController::class, 'clients_manage']);
-Route::post('admin/utility/clients/add', [UtilityController::class, 'add_clients_manage']);
-
-Route::get('admin/utility/suppliers', [UtilityController::class, 'suppliers_manage']);
-Route::post('admin/utility/suppliers/add', [UtilityController::class, 'add_suppliers_manage']);
+// Utility
+Route::get('admin/utility/manage-categories', [UtilityController::class, 'category_main']);
 
 // ? PURCHASE
 Route::get('pos/purchase/new-transaction', [POSController::class, 'pos_purchase_main']);
