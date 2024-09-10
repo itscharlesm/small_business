@@ -90,7 +90,7 @@
                             <div class="info-box bg-gradient-warning hover-box">
                                 <span class="info-box-icon"><i class="fa fa-box-open"></i></span>
                                 <div class="info-box-content">
-                                    <span class="info-box-text">Low on Stock</span>
+                                    <span class="info-box-text">On Hand Cash</span>
                                     <span class="info-box-number">13 Items</span>
                                 </div>
                             </div>
