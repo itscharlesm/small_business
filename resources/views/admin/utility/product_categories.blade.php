@@ -69,7 +69,12 @@
                                 <td class="text-center">
                                     {{ \Carbon\Carbon::parse($category->mcat_date_created)->format('F d Y') }}
                                 </td>
-                                <th class="text-center"></th>
+                                <th class="text-center">
+                                    <a class="btn btn-primary" href="javascript:void(0)" data-toggle="modal"
+                                        data-target="#editCategoryModal-{{ $category->mcat_id }}">
+                                        <i class="fa fa-edit"></i> Edit
+                                    </a>
+                                </th>
                             </tr>
                         @endforeach
                     </tbody>
@@ -107,5 +112,39 @@
         </div>
     </div>
 </div>
+
+{{-- Edit Category --}}
+@foreach($categories as $category)
+    <div class="modal fade" id="editCategoryModal-{{ $category->mcat_id }}" tabindex="-1" role="dialog"
+        aria-labelledby="editCategoryModalLabel-{{ $category->mcat_id }}" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editCategoryModalLabel-{{ $category->mcat_id }}">Edit Category</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form
+                        action="{{ action('App\Http\Controllers\UtilityController@category_update', $category->mcat_id) }}"
+                        method="POST">
+                        @csrf
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label for="mcat_name">Category Name:</label>
+                                    <input type="text" class="form-control" name="mcat_name"
+                                        value="{{ $category->mcat_name }}" required>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Update Category</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+@endforeach
 
 @endsection

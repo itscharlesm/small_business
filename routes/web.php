@@ -73,6 +73,7 @@ Route::get('admin/pos/transactions', [POSController::class, 'transaction_history
 // Utility
 Route::get('admin/utility/manage-categories', [UtilityController::class, 'category_main']);
 Route::post('admin/utility/manage-categories/create', [UtilityController::class, 'category_create']);
+Route::post('admin/utility/manage-categories/update/{mcat_id}', [UtilityController::class, 'category_update']);
 
 // ? PURCHASE
 Route::get('pos/purchase/new-transaction', [POSController::class, 'pos_purchase_main']);
