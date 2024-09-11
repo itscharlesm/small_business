@@ -58,8 +58,8 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="{{ action('App\Http\Controllers\POSController@transaction_history') }}"
-                                class="nav-link {{ request()->is('admin/pos/transactions') ? 'active' : '' }}">
+                            <a href="{{ action('App\Http\Controllers\POSController@cash_on_hand') }}"
+                                class="nav-link {{ request()->is('admin/pos/cash-on-hand') ? 'active' : '' }}">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Cash Management</p>
                             </a>

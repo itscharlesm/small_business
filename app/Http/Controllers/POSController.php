@@ -94,4 +94,18 @@ class POSController extends Controller
         // Pass the transactions with their orders to the view
         return view('admin.pos.transaction_history', compact('transactions'));
     }
+
+    public function cash_on_hand()
+    {
+        // Fetch cash on hand
+        $cash_on_hand = DB::table('user_cash')
+            ->orderBy('coh_date_created', 'desc')
+            ->get()
+            ->map(function ($cash_on_hand) {
+                $cash_on_hand->formatted_date = Carbon::parse($cash_on_hand->coh_date_created)->format('g:i A | F d Y');
+            });
+
+        // Pass the transactions with their orders to the view
+        return view('admin.pos.cash_on_hand', compact('cash_on_hand'));
+    }
 }
