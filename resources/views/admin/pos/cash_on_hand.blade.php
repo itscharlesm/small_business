@@ -27,6 +27,10 @@
     <div class="container-fluid">
         <div class="row mt-3">
             <div class="col-md-12">
+                @if(session('usr_type') == '1' || session('usr_type') == '2' || session('usr_type') == '3')
+                    <a class="btn btn-primary float-right mb-3" href="javascript:void(0)" data-toggle="modal"
+                        data-target="#newCategoryModal"><i class="fa fa-plus"></i> Set cash today</a>
+                @endif
                 <table class="table table-hover table-striped" id="RegTable">
                     <thead class="bg-gradient-dark">
                         <tr>
