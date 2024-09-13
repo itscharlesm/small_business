@@ -104,4 +104,49 @@
     </div>
 </div>
 
+{{-- Ending cash --}}
+<div class="modal fade" id="endCashModal" tabindex="-1" role="dialog" aria-labelledby="endCashModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="endCashModalLabel">End the day</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="{{ action('App\Http\Controllers\POSController@ending_cash') }}" method="POST">
+                    @csrf
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="coh_starting_cash">Starting Cash:</label>
+                                <input type="number" class="form-control" value="{{ $latestCashOnHand->coh_starting_cash ?? '' }}" step="0.01" readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="coh_on_hand_cash">Cash on Hand:</label>
+                                <input type="number" class="form-control" value="{{ $latestCashOnHand->coh_on_hand_cash ?? '' }}" step="0.01" readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="coh_ending_cash">Confirm money:</label>
+                                <input type="number" class="form-control" name="coh_ending_cash" step="0.01" required>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">End the day</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 @endsection

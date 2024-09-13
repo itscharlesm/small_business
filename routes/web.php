@@ -71,6 +71,7 @@ Route::post('admin/pos/new-transaction/payment', [POSController::class, 'payment
 Route::get('admin/pos/transactions', [POSController::class, 'transaction_history']);
 Route::get('admin/pos/cash-on-hand', [POSController::class, 'cash_on_hand']);
 Route::post('admin/pos/cash-on-hand/starting-cash', [POSController::class, 'starting_cash']);
+Route::post('admin/pos/cash-on-hand/ending-cash', [POSController::class, 'ending_cash']);
 
 // Utility
 Route::get('admin/utility/manage-categories', [UtilityController::class, 'category_main']);

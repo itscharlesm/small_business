@@ -102,6 +102,11 @@ class POSController extends Controller
             ->orderBy('coh_date_created', 'desc')
             ->get();
 
+        // Fetch the latest record for cash on hand
+        $latestCashOnHand = DB::table('user_cash')
+        ->orderBy('coh_date_created', 'desc')
+        ->first();
+
         // Get today's date
         $today = Carbon::today()->toDateString();
 
@@ -116,7 +121,8 @@ class POSController extends Controller
         return view('admin.pos.cash_on_hand', [
             'cash_on_hand' => $cash_on_hand,
             'cashOnHandToday' => $cashOnHandToday,
-            'isDayDone' => $isDayDone
+            'isDayDone' => $isDayDone,
+            'latestCashOnHand' => $latestCashOnHand,
         ]);
     }
 
@@ -144,5 +150,42 @@ class POSController extends Controller
         ]);
 
         return redirect('admin/pos/cash-on-hand')->with('success', 'Starting cash has been successfully set');
+    }
+
+    public function ending_cash(Request $request)
+    {
+        // Validate the request data
+        $request->validate([
+            'coh_ending_cash' => [
+                'required',
+                'numeric',
+                'regex:/^\d+(\.\d{1,2})?$/',
+            ],
+        ]);
+
+        // Get the validated ending cash amount
+        $coh_ending_cash = $request->input('coh_ending_cash');
+
+        // Find the latest active entry
+        $latestEntry = DB::table('user_cash')
+            ->where('coh_active', 1)
+            ->orderBy('coh_date_created', 'desc')
+            ->first();
+
+        if ($latestEntry) {
+            // Update the latest entry with the ending cash
+            DB::table('user_cash')
+                ->where('coh_id', $latestEntry->coh_id) // Assuming the primary key is 'id'
+                ->update([
+                    'coh_ending_cash' => $coh_ending_cash,
+                    'coh_date_modified' => Carbon::now(),
+                    'coh_modified_by' => session('usr_id'),
+                    'coh_active' => 0, // Optionally deactivate this entry if needed
+                ]);
+
+            return redirect('admin/pos/cash-on-hand')->with('success', 'Ending cash has been successfully set. You did well today');
+        } else {
+            return redirect('admin/pos/cash-on-hand')->with('error', 'No active starting cash entry found to update.');
+        }
     }
 }
