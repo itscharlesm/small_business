@@ -81,7 +81,7 @@
                                 <span class="info-box-icon"><i class="fa fa-peso-sign"></i></span>
                                 <div class="info-box-content">
                                     <span class="info-box-text">Earnings Today</span>
-                                    <span class="info-box-number">{{ getTotalTransactionAmountToday() }}</span>
+                                    <span class="info-box-number">₱{{ getTotalTransactionAmountToday() }}</span>
                                 </div>
                             </div>
                         </div>
@@ -90,8 +90,8 @@
                             <div class="info-box bg-gradient-warning hover-box">
                                 <span class="info-box-icon"><i class="fa fa-box-open"></i></span>
                                 <div class="info-box-content">
-                                    <span class="info-box-text">On Hand Cash</span>
-                                    <span class="info-box-number">13 Items</span>
+                                    <span class="info-box-text">Cash on Hand</span>
+                                    <span class="info-box-number">₱{{ getCashOnHandtToday() }}</span>
                                 </div>
                             </div>
                         </div>

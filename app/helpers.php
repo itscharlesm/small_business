@@ -29,6 +29,17 @@ function getTotalTransactionAmountToday()
     return $totalTransactionAmount;
 }
 
+function getCashOnHandtToday()
+{
+    $today = Carbon::today()->toDateString();
+
+    $totalTransactionAmount = DB::table('user_cash')
+        ->whereDate('coh_date_created', $today)
+        ->sum('coh_on_hand_cash');
+
+    return $totalTransactionAmount;
+}
+
 // function hasUploadedPhotos($inno_id)
 // {
 //     $innovation_image = DB::table('innovation_images')
