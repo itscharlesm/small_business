@@ -29,7 +29,7 @@
             <div class="col-md-12">
                 @if(session('usr_type') == '1' || session('usr_type') == '2' || session('usr_type') == '3')
                     <a class="btn btn-primary float-right mb-3" href="javascript:void(0)" data-toggle="modal"
-                        data-target="#newCategoryModal"><i class="fa fa-plus"></i> Set cash today</a>
+                        data-target="#setCashModal"><i class="fa fa-money-bill"></i> Set cash today</a>
                 @endif
                 <table class="table table-hover table-striped" id="RegTable">
                     <thead class="bg-gradient-dark">
@@ -37,25 +37,26 @@
                             <th class="text-center">No</th>
                             <th class="text-center">Date</th>
                             <th class="text-center">Starting Cash</th>
+                            <th class="text-center">Added by</th>
                             <th class="text-center">Cash on Hand</th>
                             <th class="text-center">End of the Day Cash</th>
-                            <th class="text-center">Action</th>
+                            <th class="text-center">Confirmed by</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach($cash_on_hand as $index => $cash)
                             <tr>
-                                <td class="text-center">{{ $index + 1 }}</td>
-                                <td class="text-center">{{ $cash->formatted_date }}</td>
-                                <td class="text-center">₱{{ number_format($cash->coh_starting_cash, 2) ?? 0  }}</td>
-                                <td class="text-right">₱{{ number_format($cash->coh_cash, 2) ?? 0  }}</td>
-                                <td class="text-right">₱{{ number_format($cash->coh_ending_cash, 2) ?? 0  }}</td>
-                                <td class="text-center">
-                                    <a class="btn btn-primary" href="javascript:void(0)" data-toggle="modal"
-                                        data-target="#viewCashHistoryModal-{{ $cash->coh_id }}">
-                                        <i class="fa fa-eye"></i> View
-                                    </a>
+                                <td class="text-center align-middle">{{ $index + 1 }}</td>
+                                <td class="text-center align-middle">
+                                    {{ \Carbon\Carbon::parse($cash->coh_date_created)->format('F j, Y') }}</td>
+                                <td class="text-center align-middle">₱{{ number_format($cash->coh_starting_cash, 2) ?? 0  }}
                                 </td>
+                                <td class="text-center align-middle">{{ $cash->coh_created_by }}</td>
+                                <td class="text-center align-middle">₱{{ number_format($cash->coh_on_hand_cash, 2) ?? 0  }}
+                                </td>
+                                <td class="text-center align-middle">₱{{ number_format($cash->coh_ending_cash, 2) ?? 0  }}
+                                </td>
+                                <td class="text-center align-middle">{{ $cash->coh_modified_by }}</td>
                             </tr>
                         @endforeach
                     </tbody>
@@ -64,5 +65,34 @@
         </div>
     </div>
 </section>
+
+{{-- Set cash --}}
+<div class="modal fade" id="setCashModal" tabindex="-1" role="dialog" aria-labelledby="setCashModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="setCashModalLabel">Set starting cash for today</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="{{ action('App\Http\Controllers\POSController@starting_cash') }}" method="POST">
+                    @csrf
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="coh_starting_cash">Enter money:</label>
+                                <input type="number" class="form-control" name="coh_starting_cash" step="0.01" required>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Set Cash</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
 @endsection

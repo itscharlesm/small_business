@@ -100,12 +100,35 @@ class POSController extends Controller
         // Fetch cash on hand
         $cash_on_hand = DB::table('user_cash')
             ->orderBy('coh_date_created', 'desc')
-            ->get()
-            ->map(function ($cash_on_hand) {
-                $cash_on_hand->formatted_date = Carbon::parse($cash_on_hand->coh_date_created)->format('g:i A | F d Y');
-            });
+            ->get();
 
         // Pass the transactions with their orders to the view
         return view('admin.pos.cash_on_hand', compact('cash_on_hand'));
+    }
+
+    public function starting_cash(Request $request)
+    {
+        // Validate the request data
+        $request->validate([
+            'coh_starting_cash' => [
+                'required',
+                'numeric',
+                'regex:/^\d+(\.\d{1,2})?$/',
+            ],
+        ]);
+
+        // Get the validated starting cash amount
+        $starting_cash = $request->input('coh_starting_cash');
+
+        // Insert the new entry into the user_cash table
+        DB::table('user_cash')->insert([
+            'coh_starting_cash' => $starting_cash,
+            'coh_on_hand_cash' => $starting_cash, // Use the same value as starting cash
+            'coh_date_created' => Carbon::now(),
+            'coh_created_by' => session('usr_id'),
+            'coh_active' => 1,
+        ]);
+
+        return redirect('admin/pos/cash-on-hand')->with('success', 'Starting cash has been successfully set');
     }
 }
