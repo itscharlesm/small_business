@@ -32,46 +32,71 @@ class POSController extends Controller
         // Begin transaction
         DB::beginTransaction();
 
-        // Insert into menu_transactions
-        $menuTransactionId = DB::table('menu_transactions')->insertGetId([
-            'mtrx_total_orders' => $request->input('mtrx_total_orders'),
-            'mtrx_total' => $request->input('mtrx_total'),
-            'mtrx_cash' => $request->input('mtrx_cash'),
-            'mtrx_change' => $request->input('mtrx_change'),
-            'mtrx_discount_whole' => $request->input('mtrx_discount_whole', null),
-            'mtrx_discount_percent' => $request->input('mtrx_discount_percent', null),
-            'mtrx_date_created' => Carbon::now(),
-            'mtrx_created_by' => session('usr_id'),
-            'mtrx_active' => 1
-        ]);
-
-        // Get order arrays from request
-        $menuNames = $request->input('menu_name', []);
-        $mcatNames = $request->input('mcat_name', []);
-        $orderPrices = $request->input('mtrxo_order_price', []);
-        $orderQuantities = $request->input('mtrxo_order_quantity', []);
-        $totalAmounts = $request->input('mtrxo_total_amount', []);
-
-        // Iterate through the orders
-        foreach ($menuNames as $index => $menuName) {
-            DB::table('menu_transaction_orders')->insert([
-                'mtrx_id' => $menuTransactionId,
-                'menu_name' => $menuName,
-                'mcat_name' => $mcatNames[$index] ?? null,
-                'mtrxo_order_quantity' => $orderQuantities[$index] ?? 0,
-                'mtrxo_order_price' => $orderPrices[$index] ?? 0,
-                'mtrxo_total_amount' => $totalAmounts[$index] ?? 0,
-                'mtrxo_date_created' => Carbon::now(),
-                'mtrxo_created_by' => session('usr_id'),
-                'mtrxo_active' => 1
+        try {
+            // Insert into menu_transactions
+            $menuTransactionId = DB::table('menu_transactions')->insertGetId([
+                'mtrx_total_orders' => $request->input('mtrx_total_orders'),
+                'mtrx_total' => $request->input('mtrx_total'),
+                'mtrx_cash' => $request->input('mtrx_cash'),
+                'mtrx_change' => $request->input('mtrx_change'),
+                'mtrx_discount_whole' => $request->input('mtrx_discount_whole', null),
+                'mtrx_discount_percent' => $request->input('mtrx_discount_percent', null),
+                'mtrx_date_created' => Carbon::now(),
+                'mtrx_created_by' => session('usr_id'),
+                'mtrx_active' => 1
             ]);
+
+            // Get order arrays from request
+            $menuNames = $request->input('menu_name', []);
+            $mcatNames = $request->input('mcat_name', []);
+            $orderPrices = $request->input('mtrxo_order_price', []);
+            $orderQuantities = $request->input('mtrxo_order_quantity', []);
+            $totalAmounts = $request->input('mtrxo_total_amount', []);
+
+            // Iterate through the orders
+            foreach ($menuNames as $index => $menuName) {
+                DB::table('menu_transaction_orders')->insert([
+                    'mtrx_id' => $menuTransactionId,
+                    'menu_name' => $menuName,
+                    'mcat_name' => $mcatNames[$index] ?? null,
+                    'mtrxo_order_quantity' => $orderQuantities[$index] ?? 0,
+                    'mtrxo_order_price' => $orderPrices[$index] ?? 0,
+                    'mtrxo_total_amount' => $totalAmounts[$index] ?? 0,
+                    'mtrxo_date_created' => Carbon::now(),
+                    'mtrxo_created_by' => session('usr_id'),
+                    'mtrxo_active' => 1
+                ]);
+            }
+
+            // Get today's date
+            $today = Carbon::today()->toDateString();
+
+            // Find today's entry
+            $cashOnHandToday = DB::table('user_cash')
+                ->whereDate('coh_date_created', $today)
+                ->first();
+
+            if ($cashOnHandToday) {
+                // Update the entry with the new cash amount
+                DB::table('user_cash')
+                    ->where('coh_id', $cashOnHandToday->coh_id)
+                    ->update([
+                        'coh_on_hand_cash' => $cashOnHandToday->coh_on_hand_cash + $request->input('mtrx_total')
+                    ]);
+            }
+
+            // Commit the transaction
+            DB::commit();
+
+            // Redirect or return success response
+            return redirect('admin/pos/new-transaction')->with('success', 'Transaction completed successfully.');
+        } catch (\Exception $e) {
+            // Rollback transaction on error
+            DB::rollback();
+
+            // Handle the error (log it, rethrow it, or return an error response)
+            return redirect('admin/pos/new-transaction')->with('error', 'An error occurred: ' . $e->getMessage());
         }
-
-        // Commit the transaction
-        DB::commit();
-
-        // Redirect or return success response
-        return redirect('admin/pos/new-transaction')->with('success', 'Transaction completed successfully.');
     }
 
     public function transaction_history()
@@ -104,8 +129,8 @@ class POSController extends Controller
 
         // Fetch the latest record for cash on hand
         $latestCashOnHand = DB::table('user_cash')
-        ->orderBy('coh_date_created', 'desc')
-        ->first();
+            ->orderBy('coh_date_created', 'desc')
+            ->first();
 
         // Get today's date
         $today = Carbon::today()->toDateString();

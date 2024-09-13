@@ -25,16 +25,39 @@
 {{-- Main Content --}}
 <section class="content">
     <div class="container-fluid">
+        @if (session('success'))
+            <div class="alert alert-success alert-dismissible" id="success-alert">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                <h5><i class="icon fa fa-check"></i> Alert!</h5>
+                {{ session('success') }}
+            </div>
+            <script>
+                document.addEventListener('DOMContentLoaded', function () {
+                    setTimeout(function () {
+                        var alert = document.getElementById('success-alert');
+                        if (alert) {
+                            alert.style.transition = 'opacity 0.5s ease';
+                            alert.style.opacity = '0';
+                            setTimeout(function () {
+                                alert.remove();
+                            }, 500);
+                        }
+                    }, 1000);
+                });
+            </script>
+        @endif
         <div class="row mt-3">
             <div class="col-md-12">
                 @if(session('usr_type') == '1' || session('usr_type') == '2' || session('usr_type') == '3')
                     @if(!$isDayDone)
                         @if($cashOnHandToday)
-                            <a class="btn btn-danger float-right mb-3" href="javascript:void(0)" data-toggle="modal" data-target="#endCashModal">
+                            <a class="btn btn-danger float-right mb-3" href="javascript:void(0)" data-toggle="modal"
+                                data-target="#endCashModal">
                                 <i class="fa fa-money-bill"></i> End the day
                             </a>
                         @else
-                            <a class="btn btn-primary float-right mb-3" href="javascript:void(0)" data-toggle="modal" data-target="#setCashModal">
+                            <a class="btn btn-primary float-right mb-3" href="javascript:void(0)" data-toggle="modal"
+                                data-target="#setCashModal">
                                 <i class="fa fa-money-bill"></i> Set cash
                             </a>
                         @endif
@@ -57,7 +80,8 @@
                             <tr>
                                 <td class="text-center align-middle">{{ $index + 1 }}</td>
                                 <td class="text-center align-middle">
-                                    {{ \Carbon\Carbon::parse($cash->coh_date_created)->format('F j, Y') }}</td>
+                                    {{ \Carbon\Carbon::parse($cash->coh_date_created)->format('F j, Y') }}
+                                </td>
                                 <td class="text-center align-middle">₱{{ number_format($cash->coh_starting_cash, 2) ?? 0  }}
                                 </td>
                                 <td class="text-center align-middle">{{ $cash->coh_created_by }}</td>
@@ -122,7 +146,8 @@
                         <div class="col-md-12">
                             <div class="form-group">
                                 <label for="coh_starting_cash">Starting Cash:</label>
-                                <input type="number" class="form-control" value="{{ $latestCashOnHand->coh_starting_cash ?? '' }}" step="0.01" readonly>
+                                <input type="number" class="form-control"
+                                    value="{{ $latestCashOnHand->coh_starting_cash ?? '' }}" step="0.01" readonly>
                             </div>
                         </div>
                     </div>
@@ -130,7 +155,8 @@
                         <div class="col-md-12">
                             <div class="form-group">
                                 <label for="coh_on_hand_cash">Cash on Hand:</label>
-                                <input type="number" class="form-control" value="{{ $latestCashOnHand->coh_on_hand_cash ?? '' }}" step="0.01" readonly>
+                                <input type="number" class="form-control"
+                                    value="{{ $latestCashOnHand->coh_on_hand_cash ?? '' }}" step="0.01" readonly>
                             </div>
                         </div>
                     </div>
