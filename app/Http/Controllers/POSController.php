@@ -102,8 +102,22 @@ class POSController extends Controller
             ->orderBy('coh_date_created', 'desc')
             ->get();
 
-        // Pass the transactions with their orders to the view
-        return view('admin.pos.cash_on_hand', compact('cash_on_hand'));
+        // Get today's date
+        $today = Carbon::today()->toDateString();
+
+        // Check if there's already a record for today
+        $cashOnHandToday = DB::table('user_cash')
+            ->whereDate('coh_date_created', $today)
+            ->first();
+
+        // Determine if the day is done (both starting and ending cash are set)
+        $isDayDone = $cashOnHandToday && $cashOnHandToday->coh_starting_cash && $cashOnHandToday->coh_ending_cash;
+
+        return view('admin.pos.cash_on_hand', [
+            'cash_on_hand' => $cash_on_hand,
+            'cashOnHandToday' => $cashOnHandToday,
+            'isDayDone' => $isDayDone
+        ]);
     }
 
     public function starting_cash(Request $request)
