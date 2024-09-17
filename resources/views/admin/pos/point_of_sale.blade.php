@@ -97,7 +97,7 @@
                         </div>
 
                         <div class="col-md-4">
-                            <div class="info-box bg-gradient-info">
+                            <div class="info-box bg-gradient-info hover-box">
                                 <span class="info-box-icon"><i class="fa fa-hashtag"></i></span>
                                 <div class="info-box-content">
                                     <span class="info-box-text">Transaction Number</span>
